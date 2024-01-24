@@ -5,6 +5,8 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+import static jakarta.persistence.FetchType.*;
+
 @Entity
 @Getter
 public class Post {
@@ -12,7 +14,7 @@ public class Post {
     @Id @GeneratedValue
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
