@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,19 +27,34 @@ public class MemberService {
     }
 
     private void validateDuplicateMember(Member member) {
-        Member byEmail = memberRepository.findByEmail(member.getEmail());
-        if (byEmail != null) {
+        Optional<Member> byEmail = memberRepository.findByEmail(member.getEmail());
+        if (byEmail.isPresent()) {
             throw new IllegalStateException("이미 존재하는 이메일입니다.");
         }
     }
 
     public List<Member> findFriends(Member member) {
-        return friendRepository.findAllMyFriends(member, FriendStatus.FRIEND);
+        Optional<List<Member>> findAll = friendRepository.findAllMyFriends(member, FriendStatus.FRIEND);
+        return findAll.orElseThrow(()-> new IllegalStateException("친구가 없습니다."));
     }
 
     public void requestFriend(Member member, Member friend) {
-        List<Friend> created = Friend.requestAdd(member, friend);
-        friendRepository.save(created.get(0));
-        friendRepository.save(created.get(1));
+        //이미 요청이있는지 체크, 이미 친구인치 체크 (테스트완료)
+        Optional<Friend> findOne = friendRepository.findOneByMemberAndFriend(member, friend);
+        if (findOne.isPresent()){
+            if (findOne.get().getFriendStatus() == FriendStatus.FRIEND){
+                throw new IllegalStateException("이미 친구입니다.");
+            }
+            throw new IllegalStateException("이미 친구요청을 했습니다.");
+        }
+        else {
+            List<Friend> created = Friend.requestAdd(member, friend);
+            friendRepository.save(created.get(0));
+            friendRepository.save(created.get(1));
+        }
+    }
+
+    public void acceptFriend(Member member, Member friend) {
+        Optional<Friend> byMemberAndFriend = friendRepository.findOneByMemberAndFriend(member, friend);
     }
 }

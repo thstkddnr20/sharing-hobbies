@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 
 import java.util.List;
+import java.util.Optional;
 
 @SpringBootTest
 public class MemberServiceTest {
@@ -49,10 +50,17 @@ public class MemberServiceTest {
         System.out.println("member1 = " + member1);
         System.out.println("member2 = " + member2);
 
+
+
+        memberService.requestFriend(member1, member2);
+        Friend friend1 = friendRepository.findOneByMemberAndFriend(member1, member2).get();
+        Friend friend2 = friendRepository.findOneByMemberAndFriend(member2, member1).get();
+
+        friend1.setFriendStatus(FriendStatus.FRIEND);
+        friend2.setFriendStatus(FriendStatus.FRIEND);
+
         memberService.requestFriend(member1, member2);
 
-        List<Member> allMyFriends = friendRepository.findAllMyFriends(member1, FriendStatus.FRIEND);
-        System.out.println("allMyFriends = " + allMyFriends);
     }
 
 }
