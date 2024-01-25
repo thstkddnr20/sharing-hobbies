@@ -37,6 +37,8 @@ public class MemberService {
     }
 
     public void requestFriend(Member member, Member friend) {
-        Friend friends = new Friend();
+        List<Friend> created = Friend.requestAdd(member, friend);
+        friendRepository.save(created.get(0));
+        friendRepository.save(created.get(1));
     }
 }

@@ -49,11 +49,7 @@ public class MemberServiceTest {
         System.out.println("member1 = " + member1);
         System.out.println("member2 = " + member2);
 
-        Friend friend = new Friend();
-        friend.setFriendStatus(FriendStatus.FRIEND);
-        friend.setMember(member1);
-        friend.setFriend(member2);
-        friendRepository.save(friend);
+        memberService.requestFriend(member1, member2);
 
         List<Member> allMyFriends = friendRepository.findAllMyFriends(member1, FriendStatus.FRIEND);
         System.out.println("allMyFriends = " + allMyFriends);
