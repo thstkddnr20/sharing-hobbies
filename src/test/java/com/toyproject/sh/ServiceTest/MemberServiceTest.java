@@ -1,16 +1,26 @@
 package com.toyproject.sh.ServiceTest;
 
+import com.toyproject.sh.domain.Friend;
+import com.toyproject.sh.domain.FriendStatus;
 import com.toyproject.sh.domain.Member;
+import com.toyproject.sh.repository.FriendRepository;
 import com.toyproject.sh.service.MemberService;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
+
+import java.util.List;
 
 @SpringBootTest
 public class MemberServiceTest {
 
     @Autowired
     MemberService memberService;
+
+    @Autowired
+    FriendRepository friendRepository;
 
     @Test
     void duplicateTest(){
@@ -22,6 +32,31 @@ public class MemberServiceTest {
 
         memberService.join(member1);
         memberService.join(member2);
+    }
+
+    @Test
+    @Transactional
+    @Rollback(value = false)
+    void findFriend(){
+        Member member1 = new Member();
+        member1.setEmail("thstkddnr20@naver.com");
+        memberService.join(member1);
+
+        Member member2 = new Member();
+        member2.setEmail("thstkddnr200@naver.com");
+        memberService.join(member2);
+
+        System.out.println("member1 = " + member1);
+        System.out.println("member2 = " + member2);
+
+        Friend friend = new Friend();
+        friend.setFriendStatus(FriendStatus.FRIEND);
+        friend.setMember(member1);
+        friend.setFriend(member2);
+        friendRepository.save(friend);
+
+        List<Member> allMyFriends = friendRepository.findAllMyFriends(member1, FriendStatus.FRIEND);
+        System.out.println("allMyFriends = " + allMyFriends);
     }
 
 }

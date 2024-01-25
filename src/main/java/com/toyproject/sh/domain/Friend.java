@@ -2,11 +2,13 @@ package com.toyproject.sh.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
 import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
 @Getter
+@Setter
 public class Friend {
 
     @Id @GeneratedValue
