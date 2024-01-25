@@ -55,6 +55,20 @@ public class MemberService {
     }
 
     public void acceptFriend(Member member, Member friend) {
-        Optional<Friend> byMemberAndFriend = friendRepository.findOneByMemberAndFriend(member, friend);
+        Optional<Friend> firstOne = friendRepository.findOneByMemberAndFriend(member, friend);
+        if (firstOne.isPresent()){
+            Friend getFirst = firstOne.get();
+            if (getFirst.getFriendStatus() == FriendStatus.WAITING){
+                getFirst.setFriendStatus(FriendStatus.FRIEND);
+                Friend getSecond = friendRepository.findOneByMemberAndFriend(friend, member).get();
+                getSecond.setFriendStatus(FriendStatus.FRIEND);
+            }
+            else {
+                throw new IllegalStateException("친구요청 대기중이 아닙니다.");
+            }
+        }
+        else {
+            throw new IllegalStateException("요청이 없습니다.");
+        }
     }
 }

@@ -53,13 +53,13 @@ public class MemberServiceTest {
 
 
         memberService.requestFriend(member1, member2);
-        Friend friend1 = friendRepository.findOneByMemberAndFriend(member1, member2).get();
-        Friend friend2 = friendRepository.findOneByMemberAndFriend(member2, member1).get();
+        memberService.acceptFriend(member2, member1);
 
-        friend1.setFriendStatus(FriendStatus.FRIEND);
-        friend2.setFriendStatus(FriendStatus.FRIEND);
+        List<Member> friends1 = memberService.findFriends(member1);
+        List<Member> friends2 = memberService.findFriends(member2);
+        System.out.println("friends1 = " + friends1);
+        System.out.println("friends2 = " + friends2);
 
-        memberService.requestFriend(member1, member2);
 
     }
 
