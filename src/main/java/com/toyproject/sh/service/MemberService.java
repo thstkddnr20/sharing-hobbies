@@ -71,4 +71,22 @@ public class MemberService {
             throw new IllegalStateException("요청이 없습니다.");
         }
     }
+
+    public void denyFriend(Member member, Member friend) {
+        Optional<Friend> firstOne = friendRepository.findOneByMemberAndFriend(member, friend);
+        if (firstOne.isPresent()){
+            Friend getFirst = firstOne.get();
+            if (getFirst.getFriendStatus() == FriendStatus.WAITING){
+                friendRepository.delete(getFirst);
+                Friend getSecond = friendRepository.findOneByMemberAndFriend(friend, member).get();
+                friendRepository.delete(getSecond);
+            }
+            else {
+                throw new IllegalStateException("친구요청 대기중이 아닙니다.");
+            }
+        }
+        else {
+            throw new IllegalStateException("요청이 없습니다.");
+        }
+    }
 }

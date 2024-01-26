@@ -53,12 +53,8 @@ public class MemberServiceTest {
 
 
         memberService.requestFriend(member1, member2);
-        memberService.acceptFriend(member2, member1);
+        memberService.denyFriend(member2, member1);
 
-        List<Member> friends1 = memberService.findFriends(member1);
-        List<Member> friends2 = memberService.findFriends(member2);
-        System.out.println("friends1 = " + friends1);
-        System.out.println("friends2 = " + friends2);
 
 
     }
