@@ -1,10 +1,10 @@
 package com.toyproject.sh.service;
 
-import com.toyproject.sh.domain.Friend;
-import com.toyproject.sh.domain.FriendStatus;
-import com.toyproject.sh.domain.Member;
+import com.toyproject.sh.domain.*;
 import com.toyproject.sh.repository.FriendRepository;
 import com.toyproject.sh.repository.MemberRepository;
+import com.toyproject.sh.repository.TagManagerRepository;
+import com.toyproject.sh.repository.TagRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +19,9 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final FriendRepository friendRepository;
+    private final TagManagerRepository tmRepository;
+    private final TagRepository tagRepository;
+
 
     public Long join(Member member) { // 회원가입
         validateDuplicateMember(member); // 중복 이메일 검증
@@ -33,6 +36,9 @@ public class MemberService {
         }
     }
 
+    /**
+     * 친구관련
+     */
     public List<Member> findFriends(Member member) {
         Optional<List<Member>> findAll = friendRepository.findAllMyFriends(member, FriendStatus.FRIEND);
         return findAll.orElseThrow(()-> new IllegalStateException("친구가 없습니다."));
@@ -88,5 +94,33 @@ public class MemberService {
         else {
             throw new IllegalStateException("요청이 없습니다.");
         }
+    }
+
+    /**
+     * 태그관련
+     */
+    public void addMemberTag(String tagName, Member member){
+        if (validateTagName(tagName)){  // #으로 시작하는게 맞다면
+            Optional<Tag> getTag = tagRepository.findByName(tagName);
+            if (getTag.isEmpty()) {
+                Tag tag = new Tag(tagName);
+                tagRepository.save(tag);
+                TagManager tagManager = new TagManager(tag, member);
+                tmRepository.save(tagManager);
+            }
+            else {
+                Tag tag = getTag.get();
+                TagManager tagManager = new TagManager(tag, member);
+                tmRepository.save(tagManager);
+            }
+        }
+        else {
+            throw new IllegalStateException("태그가 #으로 시작하지 않습니다.");
+        }
+
+    }
+
+    private boolean validateTagName(String tagName) {
+        return tagName.startsWith("#");
     }
 }

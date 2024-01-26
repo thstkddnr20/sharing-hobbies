@@ -59,4 +59,27 @@ public class MemberServiceTest {
 
     }
 
+    @Test
+    @Transactional
+    @Rollback(value = false)
+    void tagMember(){
+        Member member1 = new Member();
+        member1.setEmail("thstkddnr20@naver.com");
+        memberService.join(member1);
+
+        Member member2 = new Member();
+        member2.setEmail("thstkddnr200@naver.com");
+        memberService.join(member2);
+
+        System.out.println("member1 = " + member1);
+        System.out.println("member2 = " + member2);
+
+
+        memberService.addMemberTag("#스키", member1);
+        memberService.addMemberTag("#스키", member2);
+
+
+
+    }
+
 }

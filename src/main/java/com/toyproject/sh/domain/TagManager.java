@@ -23,4 +23,17 @@ public class TagManager {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
+
+    public TagManager(Tag tag, Member member) {
+        this.tag = tag;
+        this.member = member;
+    }
+
+    public TagManager(Tag tag, Post post) {
+        this.tag = tag;
+        this.post = post;
+    }
+
+    public TagManager() {
+    }
 }
