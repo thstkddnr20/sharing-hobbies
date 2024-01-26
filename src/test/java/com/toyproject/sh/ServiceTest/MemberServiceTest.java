@@ -74,10 +74,14 @@ public class MemberServiceTest {
         System.out.println("member1 = " + member1);
         System.out.println("member2 = " + member2);
 
-
-        memberService.addMemberTag("스키", member1);
+        System.out.println("=============================");
         memberService.addMemberTag("#스키", member1);
-
+        memberService.addMemberTag("#수영", member1);
+        memberService.addMemberTag("#클라이밍", member1);
+        System.out.println("=============================");
+        List<String> tag = memberService.findTag(member1);
+        System.out.println("=============================");
+        System.out.println("tag = " + tag);
 
 
     }

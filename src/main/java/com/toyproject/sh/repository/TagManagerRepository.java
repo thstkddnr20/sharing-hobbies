@@ -6,9 +6,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface TagManagerRepository extends JpaRepository<TagManager, Long> {
     @Query("select tm from TagManager tm where tm.tag.name =:name and tm.member =:member")
-    Optional<TagManager> findTMByNameAndMember (@Param("name") String name, @Param("member") Member member);
+    Optional<TagManager> findTMByNameAndMember(@Param("name") String name, @Param("member") Member member);
+
+    @Query("select tm.tag.name from TagManager tm where tm.member =:member")
+    Optional<List<String>> findTag(@Param("member") Member member);
 }
