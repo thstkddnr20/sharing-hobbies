@@ -75,8 +75,8 @@ public class MemberServiceTest {
         System.out.println("member2 = " + member2);
 
 
+        memberService.addMemberTag("스키", member1);
         memberService.addMemberTag("#스키", member1);
-        memberService.addMemberTag("#스키", member2);
 
 
 

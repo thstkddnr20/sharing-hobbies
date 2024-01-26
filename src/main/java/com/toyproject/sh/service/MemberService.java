@@ -100,27 +100,32 @@ public class MemberService {
      * 태그관련
      */
     public void addMemberTag(String tagName, Member member){
-        if (validateTagName(tagName)){  // #으로 시작하는게 맞다면
-            Optional<Tag> getTag = tagRepository.findByName(tagName);
-            if (getTag.isEmpty()) {
-                Tag tag = new Tag(tagName);
-                tagRepository.save(tag);
-                TagManager tagManager = new TagManager(tag, member);
-                tmRepository.save(tagManager);
-            }
-            else {
-                Tag tag = getTag.get();
-                TagManager tagManager = new TagManager(tag, member);
-                tmRepository.save(tagManager);
-            }
+        validateTagName(tagName);  // #으로 시작하는지 체크
+        validateTagExist(tagName, member); // 이미 해당 멤버가 태그를 가지고있는지 체크
+        Optional<Tag> getTag = tagRepository.findByName(tagName);
+        if (getTag.isEmpty()) {
+            Tag tag = new Tag(tagName);
+            tagRepository.save(tag);
+            TagManager tagManager = new TagManager(tag, member);
+            tmRepository.save(tagManager);
         }
         else {
-            throw new IllegalStateException("태그가 #으로 시작하지 않습니다.");
+            Tag tag = getTag.get();
+            TagManager tagManager = new TagManager(tag, member);
+            tmRepository.save(tagManager);
         }
-
     }
 
-    private boolean validateTagName(String tagName) {
-        return tagName.startsWith("#");
+    private void validateTagExist(String tagName, Member member) {
+        Optional<TagManager> tm = tmRepository.findTMByNameAndMember(tagName, member);
+        if (tm.isPresent()) {
+            throw new IllegalStateException("이미 태그가 있습니다.");
+        }
+    }
+
+    private void validateTagName(String tagName) {
+        if (!tagName.startsWith("#")) {
+            throw new IllegalStateException("태그가 #으로 시작하지 않습니다.");
+        }
     }
 }
