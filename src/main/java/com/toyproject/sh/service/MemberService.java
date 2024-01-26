@@ -116,6 +116,19 @@ public class MemberService {
         }
     }
 
+    public void deleteMemberTag(String tagName, Member member){
+        validateTagName(tagName);
+        Optional<TagManager> tm = tmRepository.findTMByNameAndMember(tagName, member);
+        if (tm.isEmpty()) {
+            throw new IllegalStateException("태그가 없습니다.");
+        }
+        else {
+            TagManager tagManager = tm.get();
+            tmRepository.delete(tagManager);
+        }
+    }
+
+
     public List<String> findTag(Member member) {
         Optional<List<String>> optionalTag = tmRepository.findTag(member);
         return optionalTag.orElseThrow(() -> new IllegalStateException("태그가 없습니다."));
