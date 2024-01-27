@@ -1,7 +1,5 @@
 package com.toyproject.sh.ServiceTest;
 
-import com.toyproject.sh.domain.Friend;
-import com.toyproject.sh.domain.FriendStatus;
 import com.toyproject.sh.domain.Member;
 import com.toyproject.sh.repository.FriendRepository;
 import com.toyproject.sh.service.MemberService;
@@ -12,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 
 import java.util.List;
-import java.util.Optional;
+
 
 @SpringBootTest
 public class MemberServiceTest {
