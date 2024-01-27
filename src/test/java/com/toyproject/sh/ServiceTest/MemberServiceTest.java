@@ -40,21 +40,40 @@ public class MemberServiceTest {
     @Rollback(value = false)
     void findFriend(){
         Member member1 = new Member();
-        member1.setEmail("thstkddnr20@naver.com");
+        member1.setEmail("1");
         memberService.join(member1);
 
         Member member2 = new Member();
-        member2.setEmail("thstkddnr200@naver.com");
+        member2.setEmail("2");
         memberService.join(member2);
 
-        System.out.println("member1 = " + member1);
-        System.out.println("member2 = " + member2);
+        Member member3 = new Member();
+        member3.setEmail("3");
+        memberService.join(member3);
 
+        Member member4 = new Member();
+        member4.setEmail("4");
+        memberService.join(member4);
 
-
-        memberService.requestFriend(member1, member2);
-        memberService.denyFriend(member2, member1);
-
+        Member member5 = new Member();
+        member5.setEmail("5");
+        memberService.join(member5);
+        System.out.println("=============================");
+        memberService.requestFriend(member2, member1);
+        System.out.println("=============================");
+        memberService.requestFriend(member3, member1);
+        memberService.requestFriend(member4, member1);
+        memberService.requestFriend(member5, member1);
+        System.out.println("=============================");
+        memberService.acceptFriend(member1, member2);
+        System.out.println("=============================");
+        memberService.acceptFriend(member1, member3);
+        memberService.acceptFriend(member1, member4);
+        memberService.acceptFriend(member1, member5);
+        System.out.println("=============================");
+        List<Member> friends = memberService.findFriends(member1, 1); // 친구가 더 없는 페이지가 뜰 경우 "친구가 없습니다" 오류발생
+        System.out.println("=============================");
+        System.out.println("friends = " + friends);
 
 
     }

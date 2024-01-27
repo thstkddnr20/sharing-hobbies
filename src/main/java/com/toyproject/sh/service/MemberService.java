@@ -7,6 +7,9 @@ import com.toyproject.sh.repository.TagManagerRepository;
 import com.toyproject.sh.repository.TagRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -39,9 +42,15 @@ public class MemberService {
     /**
      * 친구관련
      */
-    public List<Member> findFriends(Member member) {
-        Optional<List<Member>> findAll = friendRepository.findAllMyFriends(member, FriendStatus.FRIEND);
-        return findAll.orElseThrow(()-> new IllegalStateException("친구가 없습니다."));
+    public List<Member> findFriends(Member member, int pageNum) {
+        PageRequest pageRequest = PageRequest.of(pageNum, 5);
+        Page<Member> findAll = friendRepository.findAllMyFriends(member, FriendStatus.FRIEND, pageRequest);
+        if (!findAll.isEmpty()) {
+            return findAll.getContent();
+        }
+        else {
+            throw new IllegalStateException("친구가 없습니다.");
+        }
     }
 
     public void requestFriend(Member member, Member friend) {
@@ -127,7 +136,6 @@ public class MemberService {
             tmRepository.delete(tagManager);
         }
     }
-
 
     public List<String> findTag(Member member) {
         Optional<List<String>> optionalTag = tmRepository.findTag(member);
