@@ -1,6 +1,7 @@
 package com.toyproject.sh.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -27,4 +28,14 @@ public class Post {
     @Enumerated(EnumType.STRING)
     private Category category;
 
+    public Post(Member member, String thumbnail, String content, Category category) {
+        this.member = member;
+        this.thumbnail = thumbnail;
+        this.content = content;
+        this.createdAt = LocalDateTime.now();
+        this.category = category;
+    }
+
+    public Post() {
+    }
 }
