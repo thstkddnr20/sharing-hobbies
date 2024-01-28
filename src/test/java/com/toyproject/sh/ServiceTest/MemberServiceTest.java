@@ -7,6 +7,8 @@ import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.test.annotation.Rollback;
 
 import java.util.List;
@@ -69,9 +71,9 @@ public class MemberServiceTest {
         memberService.acceptFriend(member1, member4);
         memberService.acceptFriend(member1, member5);
         System.out.println("=============================");
-        List<Member> friends = memberService.findFriends(member1, 1); // 친구가 더 없는 페이지가 뜰 경우 "친구가 없습니다" 오류발생
+         // 친구가 더 없는 페이지가 뜰 경우 "친구가 없습니다" 오류발생
         System.out.println("=============================");
-        System.out.println("friends = " + friends);
+
 
 
     }

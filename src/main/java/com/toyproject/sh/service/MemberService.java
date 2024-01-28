@@ -9,6 +9,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -41,11 +42,10 @@ public class MemberService {
     /**
      * 친구관련
      */
-    public List<Member> findFriends(Member member, int pageNum) {
-        PageRequest pageRequest = PageRequest.of(pageNum, 5);
-        Page<Member> findAll = friendRepository.findAllMyFriends(member, FriendStatus.FRIEND, pageRequest);
+    public Page<Member> findFriends(Member member, Pageable pageable) {
+        Page<Member> findAll = friendRepository.findAllMyFriends(member, FriendStatus.FRIEND, pageable);
         if (!findAll.isEmpty()) {
-            return findAll.getContent();
+            return findAll;
         }
         else {
             throw new IllegalStateException("친구가 없습니다.");
