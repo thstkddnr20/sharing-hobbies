@@ -38,7 +38,6 @@ class PostServiceTest {
     }
 
     @Test
-    @Rollback(value = false)
     void 게시글_전체조회() {
         Member member = new Member();
         member.setEmail("aaa");
@@ -51,8 +50,9 @@ class PostServiceTest {
         Post post3 = new Post(member, "C", "content3", Category.GUIDE);
         postService.createPost(post3, "#스키");
 
-
-
+        Post singlePost = postService.findSinglePost(1L);
+        System.out.println("singlePost = " + singlePost);
+        System.out.println("comments = " + singlePost.getComments());
 
     }
 }

@@ -42,7 +42,13 @@ public class PostService {
         }
     }
 
-    public Page<Post> findOnesPost(Member member, Pageable pageable) {
+    private void validateTagName(String tagName) {
+        if (!tagName.startsWith("#")) {
+            throw new IllegalStateException("태그가 #으로 시작하지 않습니다.");
+        }
+    }
+
+    public Page<Post> findOnesPost(Member member, Pageable pageable) { //TODO Pageable 인자 전달하는 것 컨트롤러 부분에서 테스트 필요
         Page<Post> posts = postRepository.findAllByMember(member, pageable);
         if (!posts.isEmpty()) {
             return posts;
@@ -60,9 +66,7 @@ public class PostService {
         return postRepository.findAll(PageRequest.of(page, pageLimit, Sort.by(Sort.Direction.DESC, "id")));
     }
 
-    private void validateTagName(String tagName) {
-        if (!tagName.startsWith("#")) {
-            throw new IllegalStateException("태그가 #으로 시작하지 않습니다.");
-        }
+    public Post findSinglePost(Long id) {
+        return postRepository.findPostWithComments(id);
     }
 }

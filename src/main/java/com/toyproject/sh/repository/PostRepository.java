@@ -14,4 +14,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Query("select p from Post p order by p.createdAt desc")
     Page<Post> findAllPost(Pageable pageable);
+
+    @Query("select p from Post p left join fetch p.comments where p.id =:id") // 단일 게시글과 해당 게시글의 댓글 모두 조회
+    Post findPostWithComments(@Param("id") Long id);
 }
