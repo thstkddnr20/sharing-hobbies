@@ -1,6 +1,7 @@
 package com.toyproject.sh.service;
 
 import com.toyproject.sh.domain.*;
+import com.toyproject.sh.exception.ExceptionHandler;
 import com.toyproject.sh.repository.FriendRepository;
 import com.toyproject.sh.repository.MemberRepository;
 import com.toyproject.sh.repository.TagManagerRepository;
@@ -34,7 +35,7 @@ public class MemberService {
     private void validateDuplicateMember(Member member) {
         Optional<Member> byEmail = memberRepository.findByEmail(member.getEmail());
         if (byEmail.isPresent()) {
-            throw new IllegalStateException("이미 존재하는 이메일입니다.");
+            throw new ExceptionHandler.DuplicateEmailException("이메일이 이미 존재합니다.");
         }
     }
 
