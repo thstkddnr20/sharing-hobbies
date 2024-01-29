@@ -1,13 +1,13 @@
 package com.toyproject.sh.service;
 
-import com.toyproject.sh.domain.Post;
-import com.toyproject.sh.domain.Tag;
-import com.toyproject.sh.domain.TagManager;
+import com.toyproject.sh.domain.*;
 import com.toyproject.sh.repository.PostRepository;
 import com.toyproject.sh.repository.TagManagerRepository;
 import com.toyproject.sh.repository.TagRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -38,6 +38,20 @@ public class PostService {
                 tmRepository.save(tagManager);
             }
         }
+    }
+
+    public Page<Post> findOnesPost(Member member, Pageable pageable) {
+        Page<Post> posts = postRepository.findAllByMember(member, pageable);
+        if (!posts.isEmpty()) {
+            return posts;
+        }
+        else {
+            throw new IllegalStateException("게시글이 없습니다.");
+        }
+    }
+
+    public Page<Post> findAllPost(Pageable pageable) {
+        return postRepository.findAllPost(pageable);
     }
 
     private void validateTagName(String tagName) {

@@ -4,7 +4,6 @@ import com.toyproject.sh.domain.Category;
 import com.toyproject.sh.domain.Member;
 import com.toyproject.sh.domain.Post;
 import com.toyproject.sh.repository.MemberRepository;
-import com.toyproject.sh.repository.PostRepository;
 import com.toyproject.sh.service.PostService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
