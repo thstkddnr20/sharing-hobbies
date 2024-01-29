@@ -6,11 +6,13 @@ import lombok.Data;
 @Data
 public class CreatePostRequest {
 
+    private Category category;
+
     private String thumbnail;
 
     private String content;
 
-    private Category category;
+    private String tagName;
 
 
 }
