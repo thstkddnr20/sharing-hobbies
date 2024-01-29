@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static jakarta.persistence.FetchType.*;
 
@@ -27,6 +28,9 @@ public class Post {
 
     @Enumerated(EnumType.STRING)
     private Category category;
+
+    @OneToMany(mappedBy = "post")
+    private List<Comment> comment;
 
     public Post(Member member, String thumbnail, String content, Category category) {
         this.member = member;
