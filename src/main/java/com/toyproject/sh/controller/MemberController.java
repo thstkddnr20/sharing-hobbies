@@ -4,7 +4,6 @@ import com.toyproject.sh.domain.Member;
 import com.toyproject.sh.dto.MemberRequest;
 import com.toyproject.sh.exception.ExceptionHandler;
 import com.toyproject.sh.service.MemberService;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -24,7 +23,11 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/new") // 회원가입
-    public ResponseEntity<String> saveMember(@RequestBody @Valid MemberRequest request) {
+    public ResponseEntity<String> saveMember(@RequestBody @Valid MemberRequest request, BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()){
+            return ResponseEntity.badRequest().body("잘못된 입력입니다.");
+        }
 
         Member member = new Member(request.getEmail(), request.getPassword());
         try {
@@ -48,7 +51,7 @@ public class MemberController {
             return ResponseEntity.badRequest().body("아이디 또는 비밀번호가 잘못되었습니다.");
         }
         else {
-            //세션이 있는경우 세션반환, 없을경우 새로운 세션 생성
+            //getSession 세션이 있는경우 세션반환, 없을경우 새로운 세션 생성
             HttpSession session = request.getSession();
             //세션에 로그인 회원 정보 저장
             session.setAttribute("loginMember", member);
