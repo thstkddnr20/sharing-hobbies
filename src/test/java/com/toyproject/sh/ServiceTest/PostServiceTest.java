@@ -1,8 +1,10 @@
 package com.toyproject.sh.ServiceTest;
 
 import com.toyproject.sh.domain.Category;
+import com.toyproject.sh.domain.Comment;
 import com.toyproject.sh.domain.Member;
 import com.toyproject.sh.domain.Post;
+import com.toyproject.sh.repository.CommentRepository;
 import com.toyproject.sh.repository.MemberRepository;
 import com.toyproject.sh.service.PostService;
 import org.junit.jupiter.api.Test;
@@ -19,6 +21,9 @@ class PostServiceTest {
 
     @Autowired
     MemberRepository memberRepository;
+
+    @Autowired
+    CommentRepository commentRepository;
 
     @Autowired
     PostService postService;
@@ -49,6 +54,14 @@ class PostServiceTest {
         postService.createPost(post2, "#스키");
         Post post3 = new Post(member, "C", "content3", Category.GUIDE);
         postService.createPost(post3, "#스키");
+        Comment comment1 = new Comment();
+        comment1.setPost(post1);
+        commentRepository.save(comment1);
+        Comment comment2 = new Comment();
+        comment2.setPost(post1);
+        commentRepository.save(comment2);
+
+
 
         Post singlePost = postService.findSinglePost(1L);
         System.out.println("singlePost = " + singlePost);
