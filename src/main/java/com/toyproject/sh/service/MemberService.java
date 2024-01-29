@@ -39,8 +39,8 @@ public class MemberService {
         }
     }
 
-    public Member findMember(String email, String password) {
-        return memberRepository.findMemberByEmailAndPassword(email, password);
+    public Member findMember(String email) {
+        return memberRepository.findMemberByEmail(email);
     }
 
     /**

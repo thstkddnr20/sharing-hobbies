@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +22,7 @@ import java.net.URI;
 public class MemberController {
 
     private final MemberService memberService;
+    private final PasswordEncoder passwordEncoder;
 
     @PostMapping("/new") // 회원가입
     public ResponseEntity<String> saveMember(@RequestBody @Valid MemberRequest request, BindingResult bindingResult) {
@@ -29,7 +31,7 @@ public class MemberController {
             return ResponseEntity.badRequest().body("잘못된 입력입니다.");
         }
 
-        Member member = new Member(request.getEmail(), request.getPassword());
+        Member member = new Member(request.getEmail(), passwordEncoder.encode(request.getPassword()));
         try {
             Long id = memberService.join(member);
             return ResponseEntity.created(URI.create("/members/" + id)).build();
@@ -45,9 +47,9 @@ public class MemberController {
             return ResponseEntity.badRequest().body("잘못된 입력입니다.");
         }
 
-        Member member = memberService.findMember(memberRequest.getEmail(), memberRequest.getPassword());
+        Member member = memberService.findMember(memberRequest.getEmail());
 
-        if (member == null) {
+        if (member == null || !passwordEncoder.matches(memberRequest.getPassword(), member.getPassword())) {
             return ResponseEntity.badRequest().body("아이디 또는 비밀번호가 잘못되었습니다.");
         }
         else {
