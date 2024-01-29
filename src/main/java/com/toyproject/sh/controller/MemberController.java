@@ -1,5 +1,6 @@
 package com.toyproject.sh.controller;
 
+import com.toyproject.sh.session.SessionConst;
 import com.toyproject.sh.domain.Member;
 import com.toyproject.sh.dto.MemberRequest;
 import com.toyproject.sh.exception.ExceptionHandler;
@@ -56,9 +57,18 @@ public class MemberController {
             //getSession 세션이 있는경우 세션반환, 없을경우 새로운 세션 생성
             HttpSession session = request.getSession();
             //세션에 로그인 회원 정보 저장
-            session.setAttribute("loginMember", member);
+            session.setAttribute(SessionConst.LOGIN_MEMBER, member);
 
             return ResponseEntity.ok("로그인 완료");
         }
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+        return ResponseEntity.ok("로그아웃 완료");
     }
 }
