@@ -7,7 +7,9 @@ import com.toyproject.sh.repository.TagRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -51,7 +53,11 @@ public class PostService {
     }
 
     public Page<Post> findAllPost(Pageable pageable) {
-        return postRepository.findAllPost(pageable);
+        int page = pageable.getPageNumber() - 1; // page 위치에 있는 값은 0부터 시작한다.
+        int pageLimit = 10; // 한페이지에 보여줄 글 개수
+
+        // 한 페이지당 3개식 글을 보여주고 정렬 기준은 ID기준으로 내림차순
+        return postRepository.findAll(PageRequest.of(page, pageLimit, Sort.by(Sort.Direction.DESC, "id")));
     }
 
     private void validateTagName(String tagName) {

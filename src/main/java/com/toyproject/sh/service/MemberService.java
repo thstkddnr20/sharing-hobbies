@@ -39,6 +39,10 @@ public class MemberService {
         }
     }
 
+    public Member findMember(String email, String password) {
+        return memberRepository.findMemberByEmailAndPassword(email, password);
+    }
+
     /**
      * 친구관련
      */

@@ -8,6 +8,8 @@ import com.toyproject.sh.service.PostService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.test.annotation.Rollback;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -35,4 +37,22 @@ class PostServiceTest {
 
     }
 
+    @Test
+    @Rollback(value = false)
+    void 게시글_전체조회() {
+        Member member = new Member();
+        member.setEmail("aaa");
+        memberRepository.save(member);
+
+        Post post1 = new Post(member, "A", "content1", Category.GUIDE);
+        postService.createPost(post1, "#스키");
+        Post post2 = new Post(member, "B", "content2", Category.GUIDE);
+        postService.createPost(post2, "#스키");
+        Post post3 = new Post(member, "C", "content3", Category.GUIDE);
+        postService.createPost(post3, "#스키");
+
+
+
+
+    }
 }

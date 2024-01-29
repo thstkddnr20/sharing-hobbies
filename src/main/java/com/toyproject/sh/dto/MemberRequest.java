@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class CreateMemberRequest {
+public class MemberRequest {
 
     @NotEmpty(message = "이메일은 필수항목입니다.")
     private String email;
