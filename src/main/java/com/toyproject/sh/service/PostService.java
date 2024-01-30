@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -63,10 +64,31 @@ public class PostService {
         int pageLimit = 10; // 한페이지에 보여줄 글 개수
 
         // 한 페이지당 10개식 글을 보여주고 정렬 기준은 ID기준으로 내림차순
-        return postRepository.findAll(PageRequest.of(page, pageLimit, Sort.by(Sort.Direction.DESC, "id")));
+        return postRepository.findAll(PageRequest.of(page, pageLimit));
     }
 
     public Post findSinglePost(Long id) {
         return postRepository.findPostWithComments(id);
+    }
+
+    public Page<Post> searchAll(Pageable pageable, String search) {
+        int page = pageable.getPageNumber() - 1; // page 위치에 있는 값은 0부터 시작한다.
+        int pageLimit = 10; // 한페이지에 보여줄 글 개수
+
+        if (search.startsWith("#")) {
+            Page<Post> post = tmRepository.findPostByTagName(search, PageRequest.of(page, pageLimit));
+            if (post.isEmpty()) {
+                throw new IllegalStateException("게시글이 없습니다.");
+            }
+            return post;
+        }
+        else {
+            String nameSearch = "%" + search + "%";
+            Page<Post> post = postRepository.findPostByThumbnail(nameSearch, PageRequest.of(page, pageLimit));
+            if (post.isEmpty()) {
+                throw new IllegalStateException("게시글이 없습니다.");
+            }
+            return post;
+        }
     }
 }
