@@ -2,9 +2,7 @@ package com.toyproject.sh.controller;
 
 import com.toyproject.sh.domain.Member;
 import com.toyproject.sh.domain.Post;
-import com.toyproject.sh.dto.CreatePostRequest;
-import com.toyproject.sh.dto.PostResponse;
-import com.toyproject.sh.dto.SearchPostRequest;
+import com.toyproject.sh.dto.*;
 import com.toyproject.sh.service.PostService;
 import com.toyproject.sh.session.SessionConst;
 import jakarta.servlet.http.HttpServletRequest;
@@ -36,7 +34,7 @@ public class PostController {
 
         Post post = new Post(loginMember, postRequest.getThumbnail(), postRequest.getContent(), postRequest.getCategory());
         postService.createPost(post, postRequest.getTagName());
-        return "/";
+        return post.getId().toString();
     }
 
     @GetMapping("/all") //query parameter로 size와 page정보를 넘겨주면 해당 페이지의 게시글들을 보여준다.
@@ -54,4 +52,20 @@ public class PostController {
                 .map(post -> new PostResponse(post))
                 .toList();
     }
+
+    @GetMapping("/{postId}")
+    public PostCommentsResponse searchSinglePost(@PathVariable Long postId) {
+        Post singlePost = postService.findSinglePost(postId);
+        if (singlePost == null) {
+            throw new IllegalStateException("게시글이 없습니다.");
+        }
+
+        List<CommentResponse> commentResponse = singlePost.getComments().stream()
+                .map(comment -> new CommentResponse(comment))
+                .toList();
+
+        return new PostCommentsResponse(singlePost, commentResponse);
+    }
+
+
 }
