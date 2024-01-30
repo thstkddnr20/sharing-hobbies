@@ -4,6 +4,7 @@ import com.toyproject.sh.domain.Member;
 import com.toyproject.sh.domain.Post;
 import com.toyproject.sh.dto.CreatePostRequest;
 import com.toyproject.sh.dto.PostResponse;
+import com.toyproject.sh.dto.SearchPostRequest;
 import com.toyproject.sh.service.PostService;
 import com.toyproject.sh.session.SessionConst;
 import jakarta.servlet.http.HttpServletRequest;
@@ -42,6 +43,14 @@ public class PostController {
     public List<PostResponse> findAllPosts(@PageableDefault Pageable pageable) {
         Page<Post> allPost = postService.findAllPost(pageable);
         return allPost.stream()
+                .map(post -> new PostResponse(post))
+                .toList();
+    }
+
+    @PostMapping("/search")
+    public List<PostResponse> searchPostOrTag(@RequestBody SearchPostRequest request, @PageableDefault Pageable pageable) {
+        Page<Post> findPost = postService.searchAll(pageable, request.getSearch());
+        return findPost.stream()
                 .map(post -> new PostResponse(post))
                 .toList();
     }
