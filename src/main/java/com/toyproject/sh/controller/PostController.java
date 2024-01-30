@@ -1,8 +1,10 @@
 package com.toyproject.sh.controller;
 
+import com.toyproject.sh.domain.Comment;
 import com.toyproject.sh.domain.Member;
 import com.toyproject.sh.domain.Post;
 import com.toyproject.sh.dto.*;
+import com.toyproject.sh.service.CommentService;
 import com.toyproject.sh.service.PostService;
 import com.toyproject.sh.session.SessionConst;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
 public class PostController {
 
     private final PostService postService;
+    private final CommentService commentService;
 
     @PostMapping("/new") //TODO 태그 오류 핸들링
     public String createPost(@RequestBody CreatePostRequest postRequest,
@@ -67,5 +70,16 @@ public class PostController {
         return new PostCommentsResponse(singlePost, commentResponse);
     }
 
-
+    @PostMapping("/{postId}")
+    public String createComment(@PathVariable Long postId,
+                                              @RequestBody CreateCommentRequest commentRequest,
+                                              @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
+        if (loginMember == null) {
+            return "redirect:/members/login";
+        }
+        Post singlePost = postService.findSinglePost(postId);
+        Comment comment = new Comment(loginMember, singlePost, commentRequest.getContent());
+        commentService.saveComment(comment);
+        return "/post/{postId}";
+    }
 }

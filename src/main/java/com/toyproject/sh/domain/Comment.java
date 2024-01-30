@@ -35,4 +35,14 @@ public class Comment {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "parentComment_id")
     private Comment reply;
+
+    public Comment(Member member, Post post, String content) {
+        this.member = member;
+        this.post = post;
+        this.content = content;
+        this.createdAt = LocalDateTime.now();
+    }
+
+    public Comment() {
+    }
 }

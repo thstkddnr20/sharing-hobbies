@@ -52,12 +52,6 @@ class PostServiceTest {
         postService.createPost(post2, "#스키");
         Post post3 = new Post(member, "C", "content3", Category.GUIDE);
         postService.createPost(post3, "#스키");
-        Comment comment1 = new Comment();
-        comment1.setPost(post1);
-        commentRepository.save(comment1);
-        Comment comment2 = new Comment();
-        comment2.setPost(post1);
-        commentRepository.save(comment2);
 
 
 
