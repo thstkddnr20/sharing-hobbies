@@ -35,7 +35,7 @@ public class MemberService {
     private void validateDuplicateMember(Member member) {
         Optional<Member> byEmail = memberRepository.findByEmail(member.getEmail());
         if (byEmail.isPresent()) {
-            throw new ExceptionHandler.DuplicateEmailException("이메일이 이미 존재합니다.");
+            throw new ExceptionHandler.DuplicateEmailException();
         }
     }
 
@@ -52,7 +52,7 @@ public class MemberService {
             return findAll;
         }
         else {
-            throw new IllegalStateException("친구가 없습니다.");
+            throw new ExceptionHandler.AllFriendException("친구가 없습니다.");
         }
     }
 
@@ -61,9 +61,9 @@ public class MemberService {
         Optional<Friend> findOne = friendRepository.findOneByMemberAndFriend(member, friend);
         if (findOne.isPresent()){
             if (findOne.get().getFriendStatus() == FriendStatus.FRIEND){
-                throw new IllegalStateException("이미 친구입니다.");
+                throw new ExceptionHandler.AllFriendException("이미 친구입니다.");
             }
-            throw new IllegalStateException("이미 친구요청을 했습니다.");
+            throw new ExceptionHandler.AllFriendException("이미 친구요청을 했습니다.");
         }
         else {
             List<Friend> created = Friend.requestAdd(member, friend);
@@ -82,11 +82,11 @@ public class MemberService {
                 getSecond.setFriendStatus(FriendStatus.FRIEND);
             }
             else {
-                throw new IllegalStateException("친구요청 대기중이 아닙니다.");
+                throw new ExceptionHandler.AllFriendException("친구요청 대기중이 아닙니다.");
             }
         }
         else {
-            throw new IllegalStateException("요청이 없습니다.");
+            throw new ExceptionHandler.AllFriendException("요청이 없습니다.");
         }
     }
 
@@ -100,11 +100,11 @@ public class MemberService {
                 friendRepository.delete(getSecond);
             }
             else {
-                throw new IllegalStateException("친구요청 대기중이 아닙니다.");
+                throw new ExceptionHandler.AllFriendException("친구요청 대기중이 아닙니다.");
             }
         }
         else {
-            throw new IllegalStateException("요청이 없습니다.");
+            throw new ExceptionHandler.AllFriendException("요청이 없습니다.");
         }
     }
 
@@ -132,7 +132,7 @@ public class MemberService {
         validateTagName(tagName);
         Optional<TagManager> tm = tmRepository.findTMByNameAndMember(tagName, member);
         if (tm.isEmpty()) {
-            throw new IllegalStateException("태그가 없습니다.");
+            throw new ExceptionHandler.AllTagException("태그가 없습니다.");
         }
         else {
             TagManager tagManager = tm.get();
@@ -142,19 +142,19 @@ public class MemberService {
 
     public List<String> findTag(Member member) {
         Optional<List<String>> optionalTag = tmRepository.findTag(member);
-        return optionalTag.orElseThrow(() -> new IllegalStateException("태그가 없습니다."));
+        return optionalTag.orElseThrow(() -> new ExceptionHandler.AllTagException("태그가 없습니다."));
     }
 
     private void validateTagExist(String tagName, Member member) {
         Optional<TagManager> tm = tmRepository.findTMByNameAndMember(tagName, member);
         if (tm.isPresent()) {
-            throw new IllegalStateException("이미 태그가 있습니다.");
+            throw new ExceptionHandler.AllTagException("이미 태그가 있습니다.");
         }
     }
 
     private void validateTagName(String tagName) {
         if (!tagName.startsWith("#")) {
-            throw new IllegalStateException("태그가 #으로 시작하지 않습니다.");
+            throw new ExceptionHandler.TagNotStartWithSharpException();
         }
     }
 }

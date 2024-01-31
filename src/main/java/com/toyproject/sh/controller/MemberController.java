@@ -25,11 +25,15 @@ public class MemberController {
     private final MemberService memberService;
     private final PasswordEncoder passwordEncoder;
 
-    @PostMapping("/new") // 회원가입
+    @PostMapping("/new") // 회원가입 에러처리 완료
     public ResponseEntity<String> saveMember(@RequestBody @Valid MemberRequest request, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()){
-            return ResponseEntity.badRequest().body("잘못된 입력입니다.");
+            StringBuilder errorMessage = new StringBuilder("Validation failed for the following fields: ");
+            bindingResult.getFieldErrors().forEach(error ->
+                    errorMessage.append(error.getField()).append(" - ").append(error.getDefaultMessage()).append("; ")
+            );
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage.toString());
         }
 
         Member member = new Member(request.getEmail(), passwordEncoder.encode(request.getPassword()));

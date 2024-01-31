@@ -4,17 +4,21 @@ import com.toyproject.sh.domain.Comment;
 import com.toyproject.sh.domain.Member;
 import com.toyproject.sh.domain.Post;
 import com.toyproject.sh.dto.*;
+import com.toyproject.sh.exception.ExceptionHandler;
 import com.toyproject.sh.service.CommentService;
 import com.toyproject.sh.service.PostService;
 import com.toyproject.sh.session.SessionConst;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.util.http.parser.HttpParser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,16 +32,29 @@ public class PostController {
     private final PostService postService;
     private final CommentService commentService;
 
-    @PostMapping("/new") //TODO 태그 오류 핸들링
-    public String createPost(@RequestBody CreatePostRequest postRequest,
+    @PostMapping("/new")
+    public ResponseEntity<String> createPost(@RequestBody @Valid CreatePostRequest postRequest,
+                             BindingResult bindingResult,
                              @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
         if (loginMember == null) {
-            return "redirect:/members/login";
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("권한이 없습니다.");
+        }
+        if (bindingResult.hasErrors()) {
+            StringBuilder errorMessage = new StringBuilder("Validation failed for the following fields: ");
+            bindingResult.getFieldErrors().forEach(error ->
+                    errorMessage.append(error.getField()).append(" - ").append(error.getDefaultMessage()).append("; ")
+            );
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage.toString());
         }
 
         Post post = new Post(loginMember, postRequest.getThumbnail(), postRequest.getContent(), postRequest.getCategory());
-        postService.createPost(post, postRequest.getTagName());
-        return post.getId().toString();
+        try {
+            postService.createPost(post, postRequest.getTagName());
+        } catch (ExceptionHandler e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(post.getId().toString());
     }
 
     @GetMapping("/all") //query parameter로 size와 page정보를 넘겨주면 해당 페이지의 게시글들을 보여준다.
@@ -60,7 +77,7 @@ public class PostController {
     public PostCommentsResponse searchSinglePost(@PathVariable Long postId) {
         Post singlePost = postService.findSinglePost(postId);
         if (singlePost == null) {
-            throw new IllegalStateException("게시글이 없습니다.");
+            throw new ExceptionHandler.PostNotFoundException();
         }
 
         List<CommentResponse> commentResponse = singlePost.getComments().stream()
@@ -72,8 +89,8 @@ public class PostController {
 
     @PostMapping("/{postId}")
     public String createComment(@PathVariable Long postId,
-                                              @RequestBody CreateCommentRequest commentRequest,
-                                              @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
+                                @RequestBody CreateCommentRequest commentRequest,
+                                @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
         if (loginMember == null) {
             return "redirect:/members/login";
         }

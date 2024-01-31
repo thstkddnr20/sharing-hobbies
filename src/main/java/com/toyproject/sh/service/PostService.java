@@ -1,6 +1,7 @@
 package com.toyproject.sh.service;
 
 import com.toyproject.sh.domain.*;
+import com.toyproject.sh.exception.ExceptionHandler;
 import com.toyproject.sh.repository.PostRepository;
 import com.toyproject.sh.repository.TagManagerRepository;
 import com.toyproject.sh.repository.TagRepository;
@@ -45,7 +46,7 @@ public class PostService {
 
     private void validateTagName(String tagName) {
         if (!tagName.startsWith("#")) {
-            throw new IllegalStateException("태그가 #으로 시작하지 않습니다.");
+            throw new ExceptionHandler.TagNotStartWithSharpException();
         }
     }
 
@@ -55,7 +56,7 @@ public class PostService {
             return posts;
         }
         else {
-            throw new IllegalStateException("게시글이 없습니다.");
+            throw new ExceptionHandler.PostNotFoundException();
         }
     }
 
@@ -78,7 +79,7 @@ public class PostService {
         if (search.startsWith("#")) {
             Page<Post> post = tmRepository.findPostByTagName(search, PageRequest.of(page, pageLimit));
             if (post.isEmpty()) {
-                throw new IllegalStateException("게시글이 없습니다.");
+                throw new ExceptionHandler.PostNotFoundException();
             }
             return post;
         }
@@ -86,7 +87,7 @@ public class PostService {
             String nameSearch = "%" + search + "%";
             Page<Post> post = postRepository.findPostByThumbnail(nameSearch, PageRequest.of(page, pageLimit));
             if (post.isEmpty()) {
-                throw new IllegalStateException("게시글이 없습니다.");
+                throw new ExceptionHandler.PostNotFoundException();
             }
             return post;
         }
