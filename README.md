@@ -16,3 +16,11 @@
 - DTO에 생성자를 엔티티를 넣도록 설계하여 Entity에서 Dto의 변환이 용이하도록 했다.
 - 엔티티가 아닌 DTO에 Validation을 사용하여 값이 컨트롤러 부분에서 들어올 때 한번 걸러질 수 있도록 하였다. 또한 @NotNull, @NotEmpty, @NotBlank의 차이를 알았다.
   ㄴ @NotNull = Null만 안됨, @NotEmpty = Null, "" 안됨, @NotBlank = Null, "", " " 안됨
+
+
+
+앞으로 할 것
+타임리프 배우기, mvc 강의 조금 더 듣고
+적용시켜서 간단한 사이트 만들어보기
+
+추후에는 Spring Security 공부해서 적용시키고싶다.
