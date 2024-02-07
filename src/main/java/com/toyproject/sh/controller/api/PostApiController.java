@@ -1,4 +1,4 @@
-package com.toyproject.sh.controller;
+package com.toyproject.sh.controller.api;
 
 import com.toyproject.sh.domain.Comment;
 import com.toyproject.sh.domain.Member;
@@ -22,8 +22,8 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/post")
-public class PostController {
+@RequestMapping("/api/post")
+public class PostApiController {
 
     private final PostService postService;
     private final CommentService commentService;
