@@ -29,7 +29,7 @@ public class PostApiController {
     private final CommentService commentService;
 
     @PostMapping("/new")
-    public ResponseEntity<String> createPost(@RequestBody @Valid CreatePostRequest postRequest,
+    public ResponseEntity<String> createPost(@RequestBody @Valid ApiCreatePostRequest postRequest,
                              BindingResult bindingResult,
                              @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
         if (loginMember == null) {

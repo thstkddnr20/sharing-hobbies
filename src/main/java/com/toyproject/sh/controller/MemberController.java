@@ -10,9 +10,11 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.Banner;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,8 +27,9 @@ public class MemberController {
     private final PasswordEncoder passwordEncoder;
     private final MemberService memberService;
 
-    @GetMapping("/newForm")
-    public String createUserForm(MemberRequest memberRequest) {
+    @GetMapping("/new")
+    public String createUserForm(Model model) {
+        model.addAttribute("memberRequest", new MemberRequest());
         return "members/register";
     }
 
@@ -53,8 +56,11 @@ public class MemberController {
         }
     }
 
-    @GetMapping("/loginForm")
-    public String loginForm(MemberRequest memberRequest) { return "members/login"; }
+    @GetMapping("/login")
+    public String loginForm(Model model) {
+        model.addAttribute("memberRequest", new MemberRequest());
+        return "members/login";
+    }
 
     @PostMapping("/login")
     public String login(@Valid MemberRequest memberRequest, BindingResult bindingResult, HttpServletRequest request){

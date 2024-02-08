@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class CreatePostRequest {
+public class ApiCreatePostRequest {
 
     private Category category;
 
