@@ -1,4 +1,4 @@
-package com.toyproject.sh.config;
+package com.toyproject.sh.controller;
 
 import com.toyproject.sh.domain.Member;
 import com.toyproject.sh.session.SessionConst;
