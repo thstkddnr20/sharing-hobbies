@@ -27,7 +27,7 @@ public class PostService {
 
     public void createPost(Post post, String tagName){
         postRepository.save(post);
-        if (!(tagName == null)){
+        if (!(tagName.isEmpty())){
             validateTagName(tagName);
             Optional<Tag> byName = tagRepository.findByName(tagName);
             if (byName.isEmpty()) {
