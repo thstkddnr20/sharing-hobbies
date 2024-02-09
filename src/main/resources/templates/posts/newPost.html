@@ -11,7 +11,7 @@
 <form th:action="@{/posts/new}" th:object="${postRequest}" method="post">
     <div>
         <label for="category">카테고리:</label>
-        <select th:field="*{category}" name="category" id="category">
+        <select th:field="*{category}" th:value="*{category}" name="category" id="category">
             <option value="">카테고리를선택해주세요</option> <!--선택안할시 값 안들어감-->
             <option value="int">내 취미를 소개합니다</option>
             <option value="gui">취미 가이드</option>

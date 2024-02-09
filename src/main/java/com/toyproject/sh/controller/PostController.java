@@ -4,12 +4,16 @@ import com.toyproject.sh.domain.Category;
 import com.toyproject.sh.domain.Member;
 import com.toyproject.sh.domain.Post;
 import com.toyproject.sh.dto.FormCreatePostRequest;
+import com.toyproject.sh.dto.PostResponse;
 import com.toyproject.sh.exception.ExceptionHandler;
 import com.toyproject.sh.service.PostService;
 import com.toyproject.sh.session.SessionConst;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -55,5 +59,20 @@ public class PostController {
         }
 
         return "redirect:/";
+    }
+
+    @GetMapping("/all") //query parameter로 size와 page정보를 넘겨주면 해당 페이지의 게시글들을 보여준다.
+    public String findAllPosts(@PageableDefault(page = 1) Pageable pageable, Model model) {
+        Page<PostResponse> allPost = postService.findAllPost(pageable);
+
+        int blockLimit = 10;
+        int startPage = (((int) Math.ceil(((double) pageable.getPageNumber() / blockLimit))) - 1) * blockLimit + 1;
+        int endPage = Math.min((startPage + blockLimit - 1), allPost.getTotalPages());
+
+        model.addAttribute("postResponse", allPost);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+
+        return "posts/paging";
     }
 }

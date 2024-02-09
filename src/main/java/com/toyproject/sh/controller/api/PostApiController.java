@@ -53,13 +53,13 @@ public class PostApiController {
         return ResponseEntity.status(HttpStatus.CREATED).body(post.getId().toString());
     }
 
-    @GetMapping("/all") //query parameter로 size와 page정보를 넘겨주면 해당 페이지의 게시글들을 보여준다.
-    public List<PostResponse> findAllPosts(@PageableDefault Pageable pageable) {
-        Page<Post> allPost = postService.findAllPost(pageable);
-        return allPost.stream()
-                .map(post -> new PostResponse(post))
-                .toList();
-    }
+//    @GetMapping("/all") //query parameter로 size와 page정보를 넘겨주면 해당 페이지의 게시글들을 보여준다.
+//    public List<PostResponse> findAllPosts(@PageableDefault Pageable pageable) {
+//        Page<Post> allPost = postService.findAllPost(pageable);
+//        return allPost.stream()
+//                .map(post -> new PostResponse(post))
+//                .toList();
+//    }
 
     @PostMapping("/search")
     public List<PostResponse> searchPostOrTag(@RequestBody SearchPostRequest request, @PageableDefault Pageable pageable) {

@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
 @Data
 public class PostResponse {
 
+    private Long id;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm", timezone = "Asia/Seoul")
     private LocalDateTime time;
 
@@ -17,6 +19,7 @@ public class PostResponse {
     private String author;
 
     public PostResponse(Post post) {
+        this.id = post.getId();
         this.time = post.getCreatedAt();
         this.thumbnail = post.getThumbnail();
         this.author = post.getMember().getEmail();

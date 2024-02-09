@@ -1,6 +1,7 @@
 package com.toyproject.sh.service;
 
 import com.toyproject.sh.domain.*;
+import com.toyproject.sh.dto.PostResponse;
 import com.toyproject.sh.exception.ExceptionHandler;
 import com.toyproject.sh.repository.PostRepository;
 import com.toyproject.sh.repository.TagManagerRepository;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -58,12 +60,15 @@ public class PostService {
         }
     }
 
-    public Page<Post> findAllPost(Pageable pageable) {
+    public Page<PostResponse> findAllPost(Pageable pageable) {
         int page = pageable.getPageNumber() - 1; // page 위치에 있는 값은 0부터 시작한다.
         int pageLimit = 10; // 한페이지에 보여줄 글 개수
 
         // 한 페이지당 10개식 글을 보여주고 정렬 기준은 ID기준으로 내림차순
-        return postRepository.findAll(PageRequest.of(page, pageLimit));
+        Page<Post> posts = postRepository.findAll(PageRequest.of(page, pageLimit, Sort.by(Sort.Direction.DESC, "id")));
+
+        Page<PostResponse> postResponse = posts.map(post -> new PostResponse(post));
+        return postResponse;
     }
 
     public Post findSinglePost(Long id) {
