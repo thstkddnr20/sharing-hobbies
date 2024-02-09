@@ -3,7 +3,9 @@ package com.toyproject.sh.controller;
 import com.toyproject.sh.domain.Category;
 import com.toyproject.sh.domain.Member;
 import com.toyproject.sh.domain.Post;
+import com.toyproject.sh.dto.CommentResponse;
 import com.toyproject.sh.dto.FormCreatePostRequest;
+import com.toyproject.sh.dto.PostCommentsResponse;
 import com.toyproject.sh.dto.PostResponse;
 import com.toyproject.sh.exception.ExceptionHandler;
 import com.toyproject.sh.service.PostService;
@@ -18,6 +20,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @Slf4j
@@ -49,6 +53,8 @@ public class PostController {
         }
 
         Post post = new Post(loginMember, postRequest.getThumbnail(), postRequest.getContent(), Category.from(postRequest.getCategory()));
+        //TODO 게시글 생성중 오류가 나면 만들어진 객체에 이미 ID가 할당되어 게시글 번호가 펌핑하게 됨
+
         try {
             postService.createPost(post, postRequest.getTagName());
         } catch (ExceptionHandler e) {
@@ -65,7 +71,7 @@ public class PostController {
     public String findAllPosts(@PageableDefault(page = 1) Pageable pageable, Model model) {
         Page<PostResponse> allPost = postService.findAllPost(pageable);
 
-        int blockLimit = 10;
+        int blockLimit = 10; //page 개수 설정
         int startPage = (((int) Math.ceil(((double) pageable.getPageNumber() / blockLimit))) - 1) * blockLimit + 1;
         int endPage = Math.min((startPage + blockLimit - 1), allPost.getTotalPages());
 
@@ -74,5 +80,22 @@ public class PostController {
         model.addAttribute("endPage", endPage);
 
         return "posts/paging";
+    }
+
+    @GetMapping("/{postId}")
+    public String searchSinglePost(@PathVariable Long postId, Model model) {
+        Post singlePost = postService.findSinglePost(postId);
+        if (singlePost == null) {
+            log.error("게시글 없음 오류");
+            throw new ExceptionHandler.PostNotFoundException();
+        }
+
+        List<CommentResponse> commentResponse = singlePost.getComments().stream()
+                .map(comment -> new CommentResponse(comment))
+                .toList();
+
+        PostCommentsResponse postCommentsResponse = new PostCommentsResponse(singlePost, commentResponse);
+        model.addAttribute("singlePost", postCommentsResponse);
+        return "posts/single";
     }
 }

@@ -18,7 +18,7 @@
             </tr>
             <tr th:each="post: ${postResponse}">
                 <td th:text="${post.id}"></td>
-                <td><a th:href="@{|/posts/update/${post.id}|(page=${postResponse.number + 1})}" th:text="${post.thumbnail}"></a></td>
+                <td><a th:href="@{|/posts/${post.id}|}" th:text="${post.thumbnail}"></a></td>
                 <td th:text="${post.author}"></td>
                 <td><span th:text="${#temporals.format(post.time,'yyyy-MM-dd HH:mm')}"></span></td>
             </tr>

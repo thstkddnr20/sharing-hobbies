@@ -14,7 +14,7 @@ import static jakarta.persistence.FetchType.*;
 @Getter
 public class Post {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @ManyToOne(fetch = LAZY)
