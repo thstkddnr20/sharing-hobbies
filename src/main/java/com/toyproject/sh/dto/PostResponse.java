@@ -3,6 +3,7 @@ package com.toyproject.sh.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.toyproject.sh.domain.Post;
 import lombok.Data;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 

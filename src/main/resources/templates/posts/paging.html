@@ -28,7 +28,7 @@
         <a th:href="@{/posts/paging(page=1)}">첫 페이지 </a>
 
         <!-- 이전 링크 활성화 비활성화 -->
-        <a th:href="${postResponse.first} ? '#' : @{/posts/paging(page=${postsPages.number})}"> 이전 </a>
+        <a th:href="${postResponse.first} ? '#' : @{/posts/paging(page=${postResponse.number})}"> 이전 </a>
 
         <!-- 페이지 번호 링크(현재 페이지는 숫자만)
                 for(int page=startPage; page<=endPage; page++)-->
@@ -43,7 +43,7 @@
             </span>
 
         <!-- 다음 링크 활성화 비활성화 -->
-        <a th:href="${postResponse.last} ? '#' : @{/post/paging(page=${postResponse.number + 2})}"> 다음 </a>
+        <a th:href="${postResponse.last} ? '#' : @{/posts/paging(page=${postResponse.number + 2})}"> 다음 </a>
 
         <!-- 마지막 페이지로 이동 -->
         <a th:href="@{/posts/paging(page=${postResponse.totalPages})}"> 마지막 페이지</a>
