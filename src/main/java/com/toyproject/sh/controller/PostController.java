@@ -68,9 +68,7 @@ public class PostController {
     }
 
     @GetMapping("/paging") //query parameter로 size와 page정보를 넘겨주면 해당 페이지의 게시글들을 보여준다.
-    public String findAllPosts(@RequestParam(name = "page", defaultValue = "1") int pageNum,
-                               @PageableDefault(page = 1) Pageable pageable,
-                               Model model) {
+    public String findAllPosts(@PageableDefault(page = 1) Pageable pageable, Model model) {
         Page<PostResponse> allPost = postService.findAllPost(pageable);
 
         int blockLimit = 10; //page 개수 설정
@@ -80,7 +78,6 @@ public class PostController {
         model.addAttribute("postResponse", allPost);
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
-        model.addAttribute("pageNum", pageNum);
 
         return "posts/paging";
     }
