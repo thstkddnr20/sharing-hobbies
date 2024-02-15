@@ -11,6 +11,8 @@ import java.util.List;
 @Data
 public class PostCommentsResponse {
 
+    private Long id;
+
     private String author;
 
     private String thumbnail;
@@ -25,6 +27,7 @@ public class PostCommentsResponse {
     private List<CommentResponse> comments;
 
     public PostCommentsResponse(Post post, List<CommentResponse> comments) {
+        this.id = post.getId();
         this.author = post.getMember().getEmail();
         this.thumbnail = post.getThumbnail();
         this.content = post.getContent();

@@ -3,16 +3,14 @@ package com.toyproject.sh.controller;
 import com.toyproject.sh.domain.Category;
 import com.toyproject.sh.domain.Member;
 import com.toyproject.sh.domain.Post;
-import com.toyproject.sh.dto.CommentResponse;
-import com.toyproject.sh.dto.FormCreatePostRequest;
-import com.toyproject.sh.dto.PostCommentsResponse;
-import com.toyproject.sh.dto.PostResponse;
+import com.toyproject.sh.dto.*;
 import com.toyproject.sh.exception.ExceptionHandler;
 import com.toyproject.sh.service.PostService;
 import com.toyproject.sh.session.SessionConst;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.antlr.v4.runtime.misc.Pair;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -22,6 +20,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @Slf4j
@@ -83,7 +82,10 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    public String searchSinglePost(@PathVariable Long postId, Model model) {
+    public String searchSinglePost(@PathVariable Long postId,
+                                   Model model,
+                                   @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
+        // SessionAttribute로 가져온 Member의 이메일과 게시글의 작성자가 같을 경우 수정버튼 활성화
         Post singlePost = postService.findSinglePost(postId);
         if (singlePost == null) {
             log.error("게시글 없음 오류");
@@ -97,6 +99,38 @@ public class PostController {
         PostCommentsResponse postCommentsResponse = new PostCommentsResponse(singlePost, commentResponse);
 
         model.addAttribute("singlePost", postCommentsResponse);
+        model.addAttribute("loginMember", loginMember);
         return "posts/single";
+    }
+
+    @GetMapping("/{postId}/edit")
+    public String editForm(@PathVariable Long postId,
+                           Model model,
+                           @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
+        PostAndTagNameDto singlePostWithTag = postService.findSinglePostWithTag(postId);
+
+        if (loginMember != null && loginMember.getEmail().equals(singlePostWithTag.getPost().getMember().getEmail())) {
+            FormCreatePostRequest postRequest = new FormCreatePostRequest(singlePostWithTag.getPost(), singlePostWithTag.getTagName());
+            model.addAttribute("postRequest", postRequest);
+            model.addAttribute("postId", postId);
+            return "posts/edit";
+        }
+        else {
+            return "redirect:/";
+        }
+
+    }
+
+    @PostMapping("/{postId}/edit") //TODO 수정 되는것 확인, NonUniqueResultException 발생 수정필요
+    public String edit(@Valid FormCreatePostRequest postRequest,
+                       BindingResult bindingResult,
+                       @PathVariable Long postId) {
+        Post singlePost = postService.findSinglePost(postId);
+        singlePost.setCategory(Category.from(postRequest.getCategory()));
+        singlePost.setThumbnail(postRequest.getThumbnail());
+        singlePost.setContent(postRequest.getContent());
+
+        postService.updatePost(singlePost, postRequest.getTagName());
+        return "redirect:/posts/{postId}";
     }
 }

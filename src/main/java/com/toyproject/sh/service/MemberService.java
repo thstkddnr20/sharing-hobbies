@@ -140,10 +140,10 @@ public class MemberService {
         }
     }
 
-    public List<String> findTag(Member member) {
-        Optional<List<String>> optionalTag = tmRepository.findTag(member);
-        return optionalTag.orElseThrow(() -> new ExceptionHandler.AllTagException("태그가 없습니다."));
-    }
+//    public List<String> findTag(Member member) {
+//        Optional<List<String>> optionalTag = tmRepository.findTag(member);
+//        return optionalTag.orElseThrow(() -> new ExceptionHandler.AllTagException("태그가 없습니다."));
+//    }
 
     private void validateTagExist(String tagName, Member member) {
         Optional<TagManager> tm = tmRepository.findTMByNameAndMember(tagName, member);

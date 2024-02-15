@@ -1,6 +1,7 @@
 package com.toyproject.sh.service;
 
 import com.toyproject.sh.domain.*;
+import com.toyproject.sh.dto.PostAndTagNameDto;
 import com.toyproject.sh.dto.PostResponse;
 import com.toyproject.sh.exception.ExceptionHandler;
 import com.toyproject.sh.repository.PostRepository;
@@ -8,12 +9,15 @@ import com.toyproject.sh.repository.TagManagerRepository;
 import com.toyproject.sh.repository.TagRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.antlr.v4.runtime.misc.Pair;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -28,6 +32,29 @@ public class PostService {
     public void createPost(Post post, String tagName){
         postRepository.save(post);
         if (!(tagName.isEmpty())){
+            validateTagName(tagName);
+            Optional<Tag> byName = tagRepository.findByName(tagName);
+            if (byName.isEmpty()) {
+                Tag tag = new Tag(tagName);
+                tagRepository.save(tag);
+                TagManager tagManager = new TagManager(tag, post);
+                tmRepository.save(tagManager);
+            }
+            else {
+                Tag tag = byName.get();
+                TagManager tagManager = new TagManager(tag, post);
+                tmRepository.save(tagManager);
+            }
+        }
+    }
+
+    public void updatePost(Post post, String tagName) {
+        postRepository.save(post); // 1.태그가 없었는데 생길경우, 2.태그가 있었는데 바뀔경우, 3.태그가 있었는데 없어질 경우
+        Optional<TagManager> tmByPost = tmRepository.findTMByPost(post);
+        if (tagName == null) {
+            tmRepository.delete(tmByPost.get());
+        }
+        else {
             validateTagName(tagName);
             Optional<Tag> byName = tagRepository.findByName(tagName);
             if (byName.isEmpty()) {
@@ -75,9 +102,13 @@ public class PostService {
         return postRepository.findPostWithComments(id);
     }
 
+    public PostAndTagNameDto findSinglePostWithTag(Long id) { // 1번째 인자 Post, 두번째 인자 tagName
+        return postRepository.findPostAndTagName(id);
+    }
+
     public Page<Post> searchAll(Pageable pageable, String search) {
         int page = pageable.getPageNumber() - 1; // page 위치에 있는 값은 0부터 시작한다.
-        int pageLimit = 10; // 한페이지에 보여줄 글 개수
+        int pageLimit = 3; // 한페이지에 보여줄 글 개수
 
         if (search.startsWith("#")) {
             Page<Post> post = tmRepository.findPostByTagName(search, PageRequest.of(page, pageLimit));

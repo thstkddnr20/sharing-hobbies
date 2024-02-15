@@ -3,6 +3,7 @@ package com.toyproject.sh.domain;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import static jakarta.persistence.FetchType.*;
 
 @Entity
 @Getter
+@Setter
 public class Post {
 
     @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)

@@ -18,5 +18,8 @@
         <td th:text="${#temporals.format(comment.createdAt,'yyyy-MM-dd HH:mm')}"></td>
     </tr>
 </table>
+<div th:if="${singlePost.author eq loginMember.email}">
+    <a th:href="@{'/posts/' + ${singlePost.id} + '/edit'}">수정</a>
+</div>
 </body>
 </html>
