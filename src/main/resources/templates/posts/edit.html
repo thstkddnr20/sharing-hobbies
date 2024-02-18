@@ -20,28 +20,28 @@
             <option value="free">자유게시판</option>
             <option value="qna">질문게시판</option>
         </select>
-        <p th:if="${#fields.hasErrors('category')}" th:errors="*{category}" class="fieldError">Invalid category</p>
+        <span th:if="${#fields.hasErrors('category')}" th:errors="*{category}" >Invalid category</span>
         <br>
     </div>
 
     <div>
         <label for="thumbnail">제목:</label>
         <input type="text" id="thumbnail" name="thumbnail" th:field="*{thumbnail}" required>
-        <p th:if="${#fields.hasErrors('thumbnail')}" th:errors="*{thumbnail}" class="fieldError">Invalid thumbnail</p>
+        <span th:if="${#fields.hasErrors('thumbnail')}" th:errors="*{thumbnail}" >Invalid thumbnail</span>
         <br>
     </div>
 
     <div>
         <label for="content">내용:</label>
         <textarea id="content" name="content" th:field="*{content}" required></textarea>
-        <p th:if="${#fields.hasErrors('content')}" th:errors="*{content}" class="fieldError">Invalid content</p>
+        <span th:if="${#fields.hasErrors('content')}" th:errors="*{content}" >Invalid content</span>
         <br>
     </div>
 
     <div>
         <label for="tagName">태그:</label>
         <input type="text" id="tagName" name="tagName" th:field="*{tagName}">
-        <p th:if="${#fields.hasErrors('tagName')}" th:errors="*{tagName}" class="fieldError">Invalid tagName</p>
+        <span th:if="${#fields.hasErrors('tagName')}" th:errors="*{tagName}" >Invalid tagName</span>
         <br>
     </div>
 

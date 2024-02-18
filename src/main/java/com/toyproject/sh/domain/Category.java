@@ -5,31 +5,19 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 
 public enum Category {
-    INTRODUCE("int"),
-    GUIDE("gui"),
-    SPECIALHOBBIES("spe"),
-    TOGETHER("tog"),
-    FREE("free"),
-    QUESTION("qna");
+    INTRODUCE("취미를 소개합니다"),
+    GUIDE("취미 가이드"),
+    SPECIALHOBBIES("나만의 특별한 취미"),
+    TOGETHER("취미를 함께 즐겨요"),
+    FREE("자유게시판"),
+    QUESTION("질문게시판");
 
-    @Getter
     private final String value;
 
     Category(String value) {
         this.value = value;
     }
 
-    @JsonCreator
-    public static Category from(String value) {
-        for (Category status : Category.values()) {
-            if (status.getValue().equals(value)) {
-                return status;
-            }
-        }
-        return null;
-    }
-
-    @JsonValue
     public String getValue() {
         return value;
     }

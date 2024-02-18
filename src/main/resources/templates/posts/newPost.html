@@ -11,39 +11,37 @@
 <form th:action="@{/posts/new}" th:object="${postRequest}" method="post">
     <div>
         <label for="category">카테고리:</label>
-        <select th:field="*{category}" th:value="*{category}" name="category" id="category">
-            <option value="">카테고리를선택해주세요</option> <!--선택안할시 값 안들어감-->
-            <option value="int">내 취미를 소개합니다</option>
-            <option value="gui">취미 가이드</option>
-            <option value="spe">나만의 특별한 취미</option>
-            <option value="tog">취미를 함께 즐겨요</option>
-            <option value="free">자유게시판</option>
-            <option value="qna">질문게시판</option>
+        <select th:field="*{category}" id="category">
+            <option th:each="category : ${categorys}" th:value="${category.getCode()}" th:text="${category.getDisplayName()}"></option>
         </select>
         <p th:if="${#fields.hasErrors('category')}" th:errors="*{category}" class="fieldError">Invalid category</p>
         <br>
     </div>
+    <br>
 
     <div>
         <label for="thumbnail">제목:</label>
-        <input type="text" id="thumbnail" name="thumbnail" th:field="*{thumbnail}" required>
+        <input type="text" id="thumbnail" th:field="*{thumbnail}">
         <p th:if="${#fields.hasErrors('thumbnail')}" th:errors="*{thumbnail}" class="fieldError">Invalid thumbnail</p>
         <br>
     </div>
+    <br>
 
     <div>
         <label for="content">내용:</label>
-        <textarea id="content" name="content" th:field="*{content}" required></textarea>
+        <textarea id="content" th:field="*{content}"></textarea>
         <p th:if="${#fields.hasErrors('content')}" th:errors="*{content}" class="fieldError">Invalid content</p>
         <br>
     </div>
+    <br>
 
     <div>
         <label for="tagName">태그:</label>
-        <input type="text" id="tagName" name="tagName" th:field="*{tagName}">
+        <input type="text" id="tagName" th:field="*{tagName}">
         <p th:if="${#fields.hasErrors('tagName')}" th:errors="*{tagName}" class="fieldError">Invalid tagName</p>
         <br>
     </div>
+    <br>
 
     <button type="submit">Submit</button>
 </form>

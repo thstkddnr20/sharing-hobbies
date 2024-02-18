@@ -10,15 +10,16 @@ import com.toyproject.sh.session.SessionConst;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.antlr.v4.runtime.misc.Pair;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -38,28 +39,29 @@ public class PostController {
 
 
     @PostMapping("/new")
-    public String createPost(@Valid FormCreatePostRequest postRequest,
+    public String createPost(@ModelAttribute("postRequest") @Validated FormCreatePostRequest postRequest,
                              BindingResult bindingResult,
                              @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
                              Model model) {
         if (loginMember == null) {
             return "redirect:/";
         }
+
         if (bindingResult.hasErrors()) {
             log.error("게시글 생성 입력 오류 = {}", bindingResult.getFieldErrors());
-            model.addAttribute("postRequest", postRequest);
             return "posts/newPost";
         }
 
-        Post post = new Post(loginMember, postRequest.getThumbnail(), postRequest.getContent(), Category.from(postRequest.getCategory()));
+        Post post = new Post(loginMember, postRequest.getThumbnail(), postRequest.getContent(), postRequest.getCategory());
         //TODO 게시글 생성중 오류가 나면 만들어진 객체에 이미 ID가 할당되어 게시글 번호가 펌핑하게 됨
+        log.info("postRequest.getCategory={}", postRequest.getCategory());
 
         try {
             postService.createPost(post, postRequest.getTagName());
         } catch (ExceptionHandler e) {
-            bindingResult.rejectValue("tagName", "TagName must start with #", e.getMessage());
-            log.error("게시글 생성 서비스 중 오류 = {}", e.getMessage());
-            model.addAttribute("postRequest", postRequest);
+            bindingResult.rejectValue("tagName", "TagNotStartWithSharp");
+            log.error("bindingResult={}", bindingResult);
+            log.error("게시글 생성 서비스 중 오류 = {}", bindingResult.getFieldErrors());
             return "posts/newPost";
         }
 
@@ -114,8 +116,7 @@ public class PostController {
             model.addAttribute("postRequest", postRequest);
             model.addAttribute("postId", postId);
             return "posts/edit";
-        }
-        else {
+        } else {
             return "redirect:/";
         }
 
@@ -126,11 +127,20 @@ public class PostController {
                        BindingResult bindingResult,
                        @PathVariable Long postId) {
         Post singlePost = postService.findSinglePost(postId);
-        singlePost.setCategory(Category.from(postRequest.getCategory()));
+//        singlePost.setCategory(Category.from(postRequest.getCategory()));
         singlePost.setThumbnail(postRequest.getThumbnail());
         singlePost.setContent(postRequest.getContent());
 
         postService.updatePost(singlePost, postRequest.getTagName());
         return "redirect:/posts/{postId}";
+    }
+
+    @ModelAttribute("categorys")
+    public List<Categorys> populateCategory(){
+        List<Categorys> categorys = new ArrayList<>();
+        for (Category value : Category.values()) {
+            categorys.add(new Categorys(value.name(), value.getValue()));
+        }
+        return categorys;
     }
 }

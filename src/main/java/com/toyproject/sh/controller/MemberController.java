@@ -34,7 +34,7 @@ public class MemberController {
     }
 
     @PostMapping("/new")
-    public String register(@Valid MemberRequest request, BindingResult bindingResult) {
+    public String register(@ModelAttribute @Valid MemberRequest request, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
             StringBuilder errorMessage = new StringBuilder("Validation failed for the following fields: ");
@@ -50,7 +50,8 @@ public class MemberController {
             Long id = memberService.join(member);
             return "redirect:/";
         } catch (ExceptionHandler e) {
-            bindingResult.rejectValue("email", "Duplicate Email", e.getMessage());
+            bindingResult.rejectValue("email", "Duplicate");
+            log.error("bindingResult={}", bindingResult.getFieldErrors());
             log.error("회원가입 오류={}", e.getMessage());
             return "members/register";
         }
@@ -63,7 +64,7 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public String login(@Valid MemberRequest memberRequest, BindingResult bindingResult, HttpServletRequest request){
+    public String login(@ModelAttribute @Valid MemberRequest memberRequest, BindingResult bindingResult, HttpServletRequest request){
 
         if (bindingResult.hasErrors()){
             StringBuilder errorMessage = new StringBuilder("Validation failed for the following fields: ");
@@ -77,7 +78,8 @@ public class MemberController {
         Member member = memberService.findMember(memberRequest.getEmail());
 
         if (member == null || !passwordEncoder.matches(memberRequest.getPassword(), member.getPassword())) {
-            bindingResult.rejectValue("email", "Duplicate Email", "아이디 또는 비밀번호가 잘못되었습니다.");
+            bindingResult.rejectValue("password", "NotFound");
+            log.error("bindingResult={}", bindingResult.getFieldErrors());
             log.error("로그인 정보 입력 오류");
             return "members/login";
         }
