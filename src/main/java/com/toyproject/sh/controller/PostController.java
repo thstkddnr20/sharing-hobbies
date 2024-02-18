@@ -7,6 +7,7 @@ import com.toyproject.sh.dto.*;
 import com.toyproject.sh.exception.ExceptionHandler;
 import com.toyproject.sh.service.PostService;
 import com.toyproject.sh.session.SessionConst;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @Slf4j
@@ -42,7 +42,8 @@ public class PostController {
     public String createPost(@ModelAttribute("postRequest") @Validated FormCreatePostRequest postRequest,
                              BindingResult bindingResult,
                              @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
-                             Model model) {
+                             HttpSession session) {
+
         if (loginMember == null) {
             return "redirect:/";
         }
@@ -52,18 +53,39 @@ public class PostController {
             return "posts/newPost";
         }
 
-        Post post = new Post(loginMember, postRequest.getThumbnail(), postRequest.getContent(), postRequest.getCategory());
-        //TODO 게시글 생성중 오류가 나면 만들어진 객체에 이미 ID가 할당되어 게시글 번호가 펌핑하게 됨
-        log.info("postRequest.getCategory={}", postRequest.getCategory());
+        if (session.getAttribute("post") == null) {
+            Post post = new Post(loginMember, postRequest.getThumbnail(), postRequest.getContent(), postRequest.getCategory());
 
-        try {
-            postService.createPost(post, postRequest.getTagName());
-        } catch (ExceptionHandler e) {
-            bindingResult.rejectValue("tagName", "TagNotStartWithSharp");
-            log.error("bindingResult={}", bindingResult);
-            log.error("게시글 생성 서비스 중 오류 = {}", bindingResult.getFieldErrors());
-            return "posts/newPost";
+            try {
+                postService.createPost(post, postRequest.getTagName());
+            } catch (ExceptionHandler e) {
+                log.info("id={}", post.getId());
+                bindingResult.rejectValue("tagName", "TagNotStartWithSharp");
+                log.error("게시글 생성 서비스 중 오류 = {}", bindingResult.getFieldErrors());
+                session.setAttribute("post", post);
+                return "posts/newPost";
+            }
         }
+        else {
+            Post post = (Post) session.getAttribute("post");
+            post.setThumbnail(postRequest.getThumbnail());
+            post.setContent(postRequest.getContent());
+            post.setCategory(postRequest.getCategory());
+            try {
+                postService.createPost(post, postRequest.getTagName());
+            } catch (ExceptionHandler e) {
+                log.info("id={}", post.getId());
+                bindingResult.rejectValue("tagName", "TagNotStartWithSharp");
+                log.error("게시글 생성 서비스 중 오류 = {}", bindingResult.getFieldErrors());
+                return "posts/newPost";
+            }
+        }
+        //TODO 게시글 생성중 오류가 나면 만들어진 객체에 이미 ID가 할당되어 게시글 번호가 펌핑하게 됨
+        //결과 : 서비스 계층을 거쳐가면 ID가 자동으로 할당되어 게시글번호가 증가해서 나온다....
+        //해결방안 : 애매하다. 게시글 번호로 게시글을 찾으려면 결국 DB에서 관리해야하는거 아닌가? 게시글 번호를 뭐 페이징 기능같은걸로
+        // 가져온다고 생각해도 그 번호로 게시글을 못찾잖아
+        // 찾은 결론 : DB에 저장된 실제 PK값은 보여주지말고, 따로 게시글의 번호를 채번하라..
+
 
         return "redirect:/";
     }

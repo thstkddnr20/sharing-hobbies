@@ -16,7 +16,7 @@ import static jakarta.persistence.FetchType.*;
 @Setter
 public class Post {
 
-    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = LAZY)
@@ -36,6 +36,15 @@ public class Post {
     private List<Comment> comments;
 
     public Post(Member member, String thumbnail, String content, Category category) {
+        this.member = member;
+        this.thumbnail = thumbnail;
+        this.content = content;
+        this.createdAt = LocalDateTime.now();
+        this.category = category;
+    }
+
+    public Post(Long id, Member member, String thumbnail, String content, Category category) {
+        this.id = id;
         this.member = member;
         this.thumbnail = thumbnail;
         this.content = content;
