@@ -19,7 +19,7 @@
     </tr>
 </table>
 <div th:if="${singlePost.author eq loginMember.email}">
-    <a th:href="@{'/posts/' + ${singlePost.id} + '/edit'}">수정</a>
+    <a th:href="@{'/posts/' + ${singlePost.count} + '/edit'}">수정</a>
 </div>
 </body>
 </html>

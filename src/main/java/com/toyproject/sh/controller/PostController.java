@@ -110,9 +110,8 @@ public class PostController {
         PostAndTagNameDto singlePostWithTag = postService.findSinglePostWithTag(postId);
 
         if (loginMember != null && loginMember.getEmail().equals(singlePostWithTag.getPost().getMember().getEmail())) {
-            CreatePostForm postRequest = new CreatePostForm(singlePostWithTag.getPost(), singlePostWithTag.getTagName());
+            UpdatePostForm postRequest = new UpdatePostForm(singlePostWithTag.getPost(), singlePostWithTag.getTagName());
             model.addAttribute("postRequest", postRequest);
-            model.addAttribute("postId", postId);
             return "posts/edit";
         } else {
             return "redirect:/";
@@ -120,17 +119,30 @@ public class PostController {
 
     }
 
-    @PostMapping("/{postId}/edit") //TODO 수정 되는것 확인, NonUniqueResultException 발생 수정필요
-    public String edit(@Valid CreatePostForm postRequest,
+    @PostMapping("/{postId}/edit")
+    public String edit(@Valid @ModelAttribute("postRequest") UpdatePostForm postRequest,
                        BindingResult bindingResult,
-                       @PathVariable Long postId) {
-        Post singlePost = postService.findSinglePost(postId);
-//        singlePost.setCategory(Category.from(postRequest.getCategory()));
-        singlePost.setThumbnail(postRequest.getThumbnail());
-        singlePost.setContent(postRequest.getContent());
+                       @PathVariable Long postId,
+                       @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
 
-        postService.updatePost(singlePost, postRequest.getTagName());
-        return "redirect:/posts/{postId}";
+        if (bindingResult.hasErrors()) {
+            log.error("게시글 수정 중 오류 = {}", bindingResult.getFieldErrors());
+            return "posts/edit";
+        }
+
+        String postAuthor = postService.findPostAuthor(postId);
+
+        if (loginMember != null && postAuthor.equals(loginMember.getEmail())) { // 보안 문제 어떻게 해결?
+            Post singlePost = postService.findSinglePost(postId);
+            singlePost.setCategory(postRequest.getCategory());
+            singlePost.setThumbnail(postRequest.getThumbnail());
+            singlePost.setContent(postRequest.getContent());
+            postService.updatePost(singlePost, postRequest.getTagName());
+            return "redirect:/posts/{postId}";
+        }
+        else {
+            return "redirect:/";
+        }
     }
 
     @ModelAttribute("categorys")
