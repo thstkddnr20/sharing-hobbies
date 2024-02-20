@@ -41,8 +41,7 @@ public class PostController {
     @PostMapping("/new")
     public String createPost(@ModelAttribute("postRequest") @Validated CreatePostForm postRequest,
                              BindingResult bindingResult,
-                             @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
-                             HttpSession session) {
+                             @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
 
         if (loginMember == null) {
             return "redirect:/";
@@ -53,39 +52,16 @@ public class PostController {
             return "posts/newPost";
         }
 
-        if (session.getAttribute("post") == null) {
-            Post post = new Post(loginMember, postRequest.getThumbnail(), postRequest.getContent(), postRequest.getCategory());
+        Post post = new Post(loginMember, postRequest.getThumbnail(), postRequest.getContent(), postRequest.getCategory());
 
-            try {
-                postService.createPost(post, postRequest.getTagName());
-            } catch (ExceptionHandler e) {
-                log.info("id={}", post.getId());
-                bindingResult.rejectValue("tagName", "TagNotStartWithSharp");
-                log.error("게시글 생성 서비스 중 오류 = {}", bindingResult.getFieldErrors());
-                session.setAttribute("post", post);
-                return "posts/newPost";
-            }
+        try {
+            postService.createPost(post, postRequest.getTagName());
+        } catch (ExceptionHandler e) {
+            log.info("id={}", post.getId());
+            bindingResult.rejectValue("tagName", "TagNotStartWithSharp");
+            log.error("게시글 생성 서비스 중 오류 = {}", bindingResult.getFieldErrors());
+            return "posts/newPost";
         }
-        else {
-            Post post = (Post) session.getAttribute("post");
-            post.setThumbnail(postRequest.getThumbnail());
-            post.setContent(postRequest.getContent());
-            post.setCategory(postRequest.getCategory());
-            try {
-                postService.createPost(post, postRequest.getTagName());
-            } catch (ExceptionHandler e) {
-                log.info("id={}", post.getId());
-                bindingResult.rejectValue("tagName", "TagNotStartWithSharp");
-                log.error("게시글 생성 서비스 중 오류 = {}", bindingResult.getFieldErrors());
-                return "posts/newPost";
-            }
-        }
-        //TODO 게시글 생성중 오류가 나면 만들어진 객체에 이미 ID가 할당되어 게시글 번호가 펌핑하게 됨
-        //결과 : 서비스 계층을 거쳐가면 ID가 자동으로 할당되어 게시글번호가 증가해서 나온다....
-        //해결방안 : 애매하다. 게시글 번호로 게시글을 찾으려면 결국 DB에서 관리해야하는거 아닌가? 게시글 번호를 뭐 페이징 기능같은걸로
-        // 가져온다고 생각해도 그 번호로 게시글을 못찾잖아
-        // 찾은 결론 : DB에 저장된 실제 PK값은 보여주지말고, 따로 게시글의 번호를 채번하라..
-
 
         return "redirect:/";
     }
