@@ -29,4 +29,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("select p from Post p where p.thumbnail like :thumbnail") // 제목을 기준으로 포스트 검색
     Page<Post> findPostByThumbnail(@Param("thumbnail") String thumbnail, Pageable pageable);
 
+    @Query("select max(p.count) from Post p")
+    Long findMaxCount();
+
 }

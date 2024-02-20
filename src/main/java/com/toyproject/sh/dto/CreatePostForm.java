@@ -3,13 +3,10 @@ package com.toyproject.sh.dto;
 import com.toyproject.sh.domain.Category;
 import com.toyproject.sh.domain.Post;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 @Data
-public class FormCreatePostRequest {
-
-    private Long id;
+public class CreatePostForm {
 
     private Category category;
 
@@ -21,11 +18,10 @@ public class FormCreatePostRequest {
 
     private String tagName;
 
-    public FormCreatePostRequest() {
+    public CreatePostForm() {
     }
 
-    public FormCreatePostRequest(Post post, String tagName) {
-        this.id = post.getId();
+    public CreatePostForm(Post post, String tagName) {
         this.category = post.getCategory();
         this.thumbnail = post.getThumbnail();
         this.content = post.getContent();

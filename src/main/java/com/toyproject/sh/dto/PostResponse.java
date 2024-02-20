@@ -20,7 +20,7 @@ public class PostResponse {
     private String author;
 
     public PostResponse(Post post) {
-        this.id = post.getId();
+        this.id = post.getCount(); // 채번된 count 가져오기
         this.time = post.getCreatedAt();
         this.thumbnail = post.getThumbnail();
         this.author = post.getMember().getEmail();

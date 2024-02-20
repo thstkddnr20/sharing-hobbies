@@ -30,6 +30,13 @@ public class PostService {
     private final TagManagerRepository tmRepository;
 
     public void createPost(Post post, String tagName){
+        Long maxCount = postRepository.findMaxCount();
+        if (maxCount == null) {
+            post.setCount(1L);
+        }
+        else {
+            post.setCount(maxCount+1L);
+        }
         postRepository.save(post);
         if (!(tagName.isEmpty())){
             validateTagName(tagName);
@@ -94,8 +101,7 @@ public class PostService {
         // 한 페이지당 10개식 글을 보여주고 정렬 기준은 ID기준으로 내림차순
         Page<Post> posts = postRepository.findAll(PageRequest.of(page, pageLimit, Sort.by(Sort.Direction.DESC, "id")));
 
-        Page<PostResponse> postResponse = posts.map(post -> new PostResponse(post));
-        return postResponse;
+        return posts.map(post -> new PostResponse(post));
     }
 
     public Post findSinglePost(Long id) {

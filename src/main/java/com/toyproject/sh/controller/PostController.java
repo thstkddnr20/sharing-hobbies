@@ -33,13 +33,13 @@ public class PostController {
 
     @GetMapping("/new")
     public String newPostForm(Model model) {
-        model.addAttribute("postRequest", new FormCreatePostRequest());
+        model.addAttribute("postRequest", new CreatePostForm());
         return "posts/newPost";
     }
 
 
     @PostMapping("/new")
-    public String createPost(@ModelAttribute("postRequest") @Validated FormCreatePostRequest postRequest,
+    public String createPost(@ModelAttribute("postRequest") @Validated CreatePostForm postRequest,
                              BindingResult bindingResult,
                              @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
                              HttpSession session) {
@@ -134,7 +134,7 @@ public class PostController {
         PostAndTagNameDto singlePostWithTag = postService.findSinglePostWithTag(postId);
 
         if (loginMember != null && loginMember.getEmail().equals(singlePostWithTag.getPost().getMember().getEmail())) {
-            FormCreatePostRequest postRequest = new FormCreatePostRequest(singlePostWithTag.getPost(), singlePostWithTag.getTagName());
+            CreatePostForm postRequest = new CreatePostForm(singlePostWithTag.getPost(), singlePostWithTag.getTagName());
             model.addAttribute("postRequest", postRequest);
             model.addAttribute("postId", postId);
             return "posts/edit";
@@ -145,7 +145,7 @@ public class PostController {
     }
 
     @PostMapping("/{postId}/edit") //TODO 수정 되는것 확인, NonUniqueResultException 발생 수정필요
-    public String edit(@Valid FormCreatePostRequest postRequest,
+    public String edit(@Valid CreatePostForm postRequest,
                        BindingResult bindingResult,
                        @PathVariable Long postId) {
         Post singlePost = postService.findSinglePost(postId);
