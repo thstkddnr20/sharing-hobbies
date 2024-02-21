@@ -56,12 +56,13 @@ public class PostService {
     }
 
     public void updatePost(Post post, String tagName) {
-        postRepository.save(post); // 1.태그가 없었는데 생길경우, 2.태그가 있었는데 바뀔경우, 3.태그가 있었는데 없어질 경우 4.없는데 그대로 없는경우 //TODO 수정필요
+        postRepository.save(post); // 1.태그가 없었는데 생길경우, 2.태그가 있었는데 바뀔경우, 3.태그가 있었는데 없어질 경우 4.없는데 그대로 없는경우
         Optional<TagManager> tmByPost = tmRepository.findTMByPost(post);
         if (tagName.isEmpty() && tmByPost.isPresent()) {
             tmRepository.delete(tmByPost.get());
         }
-
+        else if (tagName.isEmpty()) {
+        }
         else if (tmByPost.isEmpty()){
             validateTagName(tagName);
             Optional<Tag> byName = tagRepository.findByName(tagName);
@@ -74,6 +75,23 @@ public class PostService {
             else {
                 Tag tag = byName.get();
                 TagManager tagManager = new TagManager(tag, post);
+                tmRepository.save(tagManager);
+            }
+        }
+        else {
+            validateTagName(tagName);
+            Optional<Tag> byName = tagRepository.findByName(tagName);
+            if (byName.isEmpty()) {
+                Tag tag = new Tag(tagName);
+                tagRepository.save(tag);
+                TagManager tagManager = tmByPost.get();
+                tagManager.setTag(tag);
+                tmRepository.save(tagManager);
+            }
+            else {
+                Tag tag = byName.get();
+                TagManager tagManager = tmByPost.get();
+                tagManager.setTag(tag);
                 tmRepository.save(tagManager);
             }
         }
