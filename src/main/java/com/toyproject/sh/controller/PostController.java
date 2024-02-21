@@ -1,13 +1,14 @@
 package com.toyproject.sh.controller;
 
 import com.toyproject.sh.domain.Category;
+import com.toyproject.sh.domain.Comment;
 import com.toyproject.sh.domain.Member;
 import com.toyproject.sh.domain.Post;
 import com.toyproject.sh.dto.*;
 import com.toyproject.sh.exception.ExceptionHandler;
+import com.toyproject.sh.service.CommentService;
 import com.toyproject.sh.service.PostService;
 import com.toyproject.sh.session.SessionConst;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +31,7 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
+    private final CommentService commentService;
 
     @GetMapping("/new")
     public String newPostForm(Model model) {
@@ -81,10 +83,11 @@ public class PostController {
         return "posts/paging";
     }
 
-    @GetMapping("/{postId}")
-    public String searchSinglePost(@PathVariable Long postId,
-                                   Model model,
-                                   @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
+    @GetMapping("/{postId}") //댓글작성: 댓글작성에 대한 폼 전달-> html에서 댓글 등록 -> PostMapping으로 넘기기  댓글 삭제 :html에서 댓글 삭제 버튼 생성(로그인멤버와 댓글작성자가 같은지 확인필요) -> 댓글삭제버튼 생성
+    public String singlePostAndCommentForm(@PathVariable Long postId,
+                             Model model,
+                             @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
+                             CreateCommentForm commentForm) {
         // SessionAttribute로 가져온 Member의 이메일과 게시글의 작성자가 같을 경우 수정버튼 활성화
         Post singlePost = postService.findSinglePost(postId);
         if (singlePost == null) {
@@ -98,9 +101,32 @@ public class PostController {
 
         PostCommentsResponse postCommentsResponse = new PostCommentsResponse(singlePost, commentResponse);
 
+        commentForm.setEmail(loginMember.getEmail());
         model.addAttribute("singlePost", postCommentsResponse);
         model.addAttribute("loginMember", loginMember);
+        model.addAttribute("commentForm", commentForm);
         return "posts/single";
+    }
+
+    @PostMapping("/{postId}")
+    public String createComment(@Validated @ModelAttribute("commentForm") CreateCommentForm commentForm,
+                                BindingResult bindingResult,
+                                @PathVariable Long postId,
+                                @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
+
+        if (bindingResult.hasErrors()) {
+            log.error("댓글 생성중 오류 = {}", bindingResult);
+            return "posts/single";
+        }
+
+        if (loginMember != null && loginMember.getEmail().equals(commentForm.getEmail())) {
+            Post post = postService.findOnePost(postId);
+            Comment comment = new Comment(loginMember, post, commentForm.getContent());
+            commentService.saveComment(comment);
+            return "redirect:/posts/{postId}";
+        }
+
+        return "redirect:/";
     }
 
     @GetMapping("/{postId}/edit")
@@ -144,6 +170,12 @@ public class PostController {
             return "redirect:/";
         }
     }
+
+//    @PostMapping("/{postId}/delete") //TODO 생각해보니 삭제는 댓글도 함께 삭제시켜야하니 댓글을 먼저 구현하고 하는게 맞는듯
+//    public String delete(@PathVariable Long postId,
+//                         @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
+//
+//    }
 
     @ModelAttribute("categorys")
     public List<Categorys> populateCategory(){

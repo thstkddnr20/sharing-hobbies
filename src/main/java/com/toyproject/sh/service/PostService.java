@@ -56,12 +56,13 @@ public class PostService {
     }
 
     public void updatePost(Post post, String tagName) {
-        postRepository.save(post); // 1.태그가 없었는데 생길경우, 2.태그가 있었는데 바뀔경우, 3.태그가 있었는데 없어질 경우
+        postRepository.save(post); // 1.태그가 없었는데 생길경우, 2.태그가 있었는데 바뀔경우, 3.태그가 있었는데 없어질 경우 4.없는데 그대로 없는경우 //TODO 수정필요
         Optional<TagManager> tmByPost = tmRepository.findTMByPost(post);
-        if (tagName.isEmpty()) {
+        if (tagName.isEmpty() && tmByPost.isPresent()) {
             tmRepository.delete(tmByPost.get());
         }
-        else {
+
+        else if (tmByPost.isEmpty()){
             validateTagName(tagName);
             Optional<Tag> byName = tagRepository.findByName(tagName);
             if (byName.isEmpty()) {
@@ -135,5 +136,9 @@ public class PostService {
 
     public String findPostAuthor(Long postId) {
         return postRepository.findPostAuthor(postId);
+    }
+
+    public Post findOnePost(Long postId) {
+        return postRepository.findOnePost(postId);
     }
 }

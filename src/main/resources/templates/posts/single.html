@@ -11,6 +11,26 @@
 <p th:text ="${singlePost.category}">카테고리가 들어갈 부분입니다.</p>
 <p th:text ="${#temporals.format(singlePost.createdAt,'yyyy-MM-dd HH:mm')}">생성일자가 들어갈 부분입니다.</p>
 <p th:each="comment : ${singlePost.comments}"></p>
+
+<div th:if="${singlePost.author eq loginMember.email}">
+    <a th:href="@{'/posts/' + ${singlePost.count} + '/edit'}">수정</a>
+</div>
+<div th:if="${singlePost.author eq loginMember.email}">
+    <a th:href="@{'/posts/' + ${singlePost.count} + '/delete'}">삭제</a>
+</div>
+<h1>댓글등록</h1>
+<form th:action="@{/posts/{postId}(postId=${singlePost.count})}" th:object="${commentForm}" method="post">
+    <div>
+        <label for="email">작성자:</label>
+        <input type="text" id="email" th:field="*{email}" readonly>
+
+        <label for="content">내용:</label>
+        <input type="text" id="content" th:field="*{content}">
+    </div>
+    <button type="submit">Submit</button>
+</form>
+
+<h1>댓글</h1>
 <table>
     <tr th:each="comment : ${singlePost.comments} ">
         <td th:text="${comment.author}"></td>
@@ -18,8 +38,5 @@
         <td th:text="${#temporals.format(comment.createdAt,'yyyy-MM-dd HH:mm')}"></td>
     </tr>
 </table>
-<div th:if="${singlePost.author eq loginMember.email}">
-    <a th:href="@{'/posts/' + ${singlePost.count} + '/edit'}">수정</a>
-</div>
 </body>
 </html>
