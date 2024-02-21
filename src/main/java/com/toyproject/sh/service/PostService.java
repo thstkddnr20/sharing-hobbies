@@ -159,4 +159,8 @@ public class PostService {
     public Post findOnePost(Long postId) {
         return postRepository.findOnePost(postId);
     }
+
+    public void deletePost(Post post) {
+        postRepository.delete(post);
+    }
 }

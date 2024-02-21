@@ -170,12 +170,18 @@ public class PostController {
             return "redirect:/";
         }
     }
+    @GetMapping("/{postId}/delete")
+    public String delete(@PathVariable Long postId,
+                         @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
 
-//    @PostMapping("/{postId}/delete") //TODO 생각해보니 삭제는 댓글도 함께 삭제시켜야하니 댓글을 먼저 구현하고 하는게 맞는듯
-//    public String delete(@PathVariable Long postId,
-//                         @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
-//
-//    }
+        Post post = postService.findOnePost(postId);
+        if (loginMember != null && loginMember.getEmail().equals(post.getMember().getEmail())) {
+            postService.deletePost(post);
+            return "redirect:/posts/paging";
+        } else {
+            return "redirect:/";
+        }
+    }
 
     @ModelAttribute("categorys")
     public List<Categorys> populateCategory(){
