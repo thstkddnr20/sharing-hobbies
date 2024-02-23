@@ -46,6 +46,14 @@ TODO 친구목록 만들어서 친구 관리하기
 
 말그대로 ArgumentResolver는 그저 세션에 Member가 있는지 Annotation을 이용하여 찾아오는 역할, Interceptor는 Member를 검증하는 역할을 한다.
 
+24.02.24 04:21 인터셉터에서 쿼리파라미터로 보낸 값이 컨트롤러에 전달이 안되는 문제가 있었다.
+오픈카톡방의 귀인을 만나 해결하였다.
+기존 코드 <form th:action="@{/login}" th:object="${memberRequest}" method="post"> -> 변경 후 <form th:action th:object="${memberRequest}" method="post">
+변경전, 변경후 코드를 올렸더니 챗gpt의 대답 : 이 경우, th:action을 비워두었으므로, 현재 페이지의 URL을 대상으로 폼이 제출됩니다.
+원래는 절대경로로 딱 /login으로 들어오는 것만 폼으로 제출하였고, th:action을 비워놓아 쿼리파라미터가 붙은 url 전부를 폼으로 제출한 것이다. ex) /login?redirectURL=/posts/new
+
+
+
 
 
 
