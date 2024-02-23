@@ -52,7 +52,7 @@ public class MemberService {
             return findAll;
         }
         else {
-            throw new ExceptionHandler.AllFriendException("친구가 없습니다.");
+            throw new ExceptionHandler.FriendException("친구가 없습니다.");
         }
     }
 
@@ -61,9 +61,9 @@ public class MemberService {
         Optional<Friend> findOne = friendRepository.findOneByMemberAndFriend(member, friend);
         if (findOne.isPresent()){
             if (findOne.get().getFriendStatus() == FriendStatus.FRIEND){
-                throw new ExceptionHandler.AllFriendException("이미 친구입니다.");
+                throw new ExceptionHandler.FriendException("이미 친구입니다.");
             }
-            throw new ExceptionHandler.AllFriendException("이미 친구요청을 했습니다.");
+            throw new ExceptionHandler.FriendException("이미 친구요청을 했습니다.");
         }
         else {
             List<Friend> created = Friend.requestAdd(member, friend);
@@ -82,11 +82,11 @@ public class MemberService {
                 getSecond.setFriendStatus(FriendStatus.FRIEND);
             }
             else {
-                throw new ExceptionHandler.AllFriendException("친구요청 대기중이 아닙니다.");
+                throw new ExceptionHandler.FriendException("친구요청 대기중이 아닙니다.");
             }
         }
         else {
-            throw new ExceptionHandler.AllFriendException("요청이 없습니다.");
+            throw new ExceptionHandler.FriendException("요청이 없습니다.");
         }
     }
 
@@ -100,11 +100,11 @@ public class MemberService {
                 friendRepository.delete(getSecond);
             }
             else {
-                throw new ExceptionHandler.AllFriendException("친구요청 대기중이 아닙니다.");
+                throw new ExceptionHandler.FriendException("친구요청 대기중이 아닙니다.");
             }
         }
         else {
-            throw new ExceptionHandler.AllFriendException("요청이 없습니다.");
+            throw new ExceptionHandler.FriendException("요청이 없습니다.");
         }
     }
 

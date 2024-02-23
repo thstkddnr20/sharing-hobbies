@@ -24,8 +24,8 @@ public class ExceptionHandler extends RuntimeException{
         }
     }
 
-    public static class AllFriendException extends ExceptionHandler {
-        public AllFriendException(String message){
+    public static class FriendException extends ExceptionHandler {
+        public FriendException(String message){
             super(message);
         }
     }
