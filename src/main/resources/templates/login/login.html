@@ -8,7 +8,7 @@
 
 <h1>로그인</h1>
 
-<form th:action="@{/members/login}" th:object="${memberRequest}" method="post">
+<form th:action="@{/login}" th:object="${memberRequest}" method="post">
     <label for="email">Email:</label>
     <input type="email" id="email" name="email" th:field="*{email}" required>
     <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Invalid email</p>
@@ -19,7 +19,7 @@
     <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Invalid password</p>
     <br>
 
-    <button type="submit">Submit</button>
+    <button type="submit">로그인</button>
 </form>
 
 </body>

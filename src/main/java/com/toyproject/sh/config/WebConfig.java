@@ -23,7 +23,7 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(new LoginInterceptor())
                 .order(1)
                 .addPathPatterns("/**")
-                .excludePathPatterns("/", "/members/new", "/members/login", "/members/logout", "/posts/paging", // 인터셉터의 영향을 받지않는 페이지들
+                .excludePathPatterns("/", "/login", "/new", "/posts/paging", // 인터셉터의 영향을 받지않는 페이지들
                         "/css/**", "/*.ico", "/error");
     }
 }

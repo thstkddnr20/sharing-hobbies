@@ -8,7 +8,7 @@
 
 <h1>회원가입</h1>
 
-<form th:action="@{/members/new}" th:object="${memberRequest}" method="post">
+<form th:action="@{/new}" th:object="${memberRequest}" method="post">
     <label for="email">Email:</label>
     <input type="email" id="email" name="email" th:field="*{email}" required>
     <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Invalid email</p>

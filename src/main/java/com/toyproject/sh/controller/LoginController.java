@@ -10,8 +10,6 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.Banner;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,8 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/members")
-public class MemberController {
+public class LoginController {
 
     private final PasswordEncoder passwordEncoder;
     private final MemberService memberService;
@@ -30,7 +27,7 @@ public class MemberController {
     @GetMapping("/new")
     public String createUserForm(Model model) {
         model.addAttribute("memberRequest", new MemberRequest());
-        return "members/register";
+        return "login/register";
     }
 
     @PostMapping("/new")
@@ -42,7 +39,7 @@ public class MemberController {
                     errorMessage.append(error.getField()).append(" - ").append(error.getDefaultMessage())
             );
             log.error("회원가입 오류={}", errorMessage);
-            return "members/register";
+            return "login/register";
         }
 
         try {
@@ -53,21 +50,21 @@ public class MemberController {
             bindingResult.rejectValue("email", "Duplicate");
             log.error("bindingResult={}", bindingResult.getFieldErrors());
             log.error("회원가입 오류={}", e.getMessage());
-            return "members/register";
+            return "login/register";
         }
     }
 
     @GetMapping("/login")
     public String loginForm(Model model) {
         model.addAttribute("memberRequest", new MemberRequest());
-        return "members/login";
+        return "login/login";
     }
 
     @PostMapping("/login")
     public String login(@ModelAttribute @Valid MemberRequest memberRequest,
                         BindingResult bindingResult,
-                        HttpServletRequest request,
-                        @RequestParam(defaultValue = "/") String redirectURL){ // redirectURL이 안넘어옴..
+                        @RequestParam(defaultValue = "/") String redirectURL,
+                        HttpServletRequest request){ // redirectURL이 안넘어옴..
 
         if (bindingResult.hasErrors()){
             StringBuilder errorMessage = new StringBuilder("Validation failed for the following fields: ");
@@ -75,7 +72,7 @@ public class MemberController {
                     errorMessage.append(error.getField()).append(" - ").append(error.getDefaultMessage())
             );
             log.error("로그인 오류={}", errorMessage);
-            return "members/login";
+            return "login/login";
         }
 
         Member member = memberService.findMember(memberRequest.getEmail());
@@ -84,16 +81,17 @@ public class MemberController {
             bindingResult.rejectValue("password", "NotFound");
             log.error("bindingResult={}", bindingResult.getFieldErrors());
             log.error("로그인 정보 입력 오류");
-            return "members/login";
+            return "login/login";
         }
-        else {
-            //getSession 세션이 있는경우 세션반환, 없을경우 새로운 세션 생성
-            HttpSession session = request.getSession();
-            //세션에 로그인 회원 정보 저장
-            session.setAttribute(SessionConst.LOGIN_MEMBER, member);
 
-            return "redirect:" + redirectURL;
-        }
+        log.info("redirect = {}", redirectURL);
+        //getSession 세션이 있는경우 세션반환, 없을경우 새로운 세션 생성
+        HttpSession session = request.getSession();
+        //세션에 로그인 회원 정보 저장
+        session.setAttribute(SessionConst.LOGIN_MEMBER, member);
+
+        return "redirect:" + redirectURL;
+
     }
 
     @GetMapping("/logout")
