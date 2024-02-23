@@ -38,4 +38,14 @@
 또한 게시글 수정에서 태그에 대한 로직의 조건문에 문제가 생겨서 수정하여 오류를 고쳤다.
 TODO 친구목록 만들어서 친구 관리하기
 
+24.02.23 ArgumentResolver @Login 생성, Interceptor 생성
+![image](https://github.com/thstkddnr20/sharing-hobbies/assets/79399385/df99ac88-0e90-47eb-a41d-323d5f1d7420)
+원리
+1. 핸들러 어댑터에서 동작하는 ArgumentResolver에서(여기선 LoginArgumentResolver) 세션에 Member정보가 있는지 '찾음' 있으면 그대로 반환, 없으면 null 반환
+2. 그 후 컨트롤러(핸들러)를 호출하기 직전에 호출되는 Interceptor에서 whitelist(excludePathPatterns)를 제외한 링크 접속 시 preHandle에서 세션을 '검증' 검증 실패 시 로그인 화면으로 리다이렉트하며 false 반환, 성공시 true 반환하여 컨트롤러 호출
+
+말그대로 ArgumentResolver는 그저 세션에 Member가 있는지 Annotation을 이용하여 찾아오는 역할, Interceptor는 Member를 검증하는 역할을 한다.
+
+
+
 
