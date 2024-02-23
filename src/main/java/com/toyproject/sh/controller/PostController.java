@@ -45,10 +45,6 @@ public class PostController {
                              BindingResult bindingResult,
                              @Login Member loginMember) {
 
-        if (loginMember == null) {
-            return "home";
-        }
-
         if (bindingResult.hasErrors()) {
             log.error("게시글 생성 입력 오류 = {}", bindingResult.getFieldErrors());
             return "posts/newPost";

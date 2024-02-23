@@ -64,7 +64,10 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public String login(@ModelAttribute @Valid MemberRequest memberRequest, BindingResult bindingResult, HttpServletRequest request){
+    public String login(@ModelAttribute @Valid MemberRequest memberRequest,
+                        BindingResult bindingResult,
+                        HttpServletRequest request,
+                        @RequestParam(defaultValue = "/") String redirectURL){ // redirectURL이 안넘어옴..
 
         if (bindingResult.hasErrors()){
             StringBuilder errorMessage = new StringBuilder("Validation failed for the following fields: ");
@@ -89,7 +92,7 @@ public class MemberController {
             //세션에 로그인 회원 정보 저장
             session.setAttribute(SessionConst.LOGIN_MEMBER, member);
 
-            return "redirect:/";
+            return "redirect:" + redirectURL;
         }
     }
 
