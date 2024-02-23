@@ -1,5 +1,6 @@
 package com.toyproject.sh.controller;
 
+import com.toyproject.sh.argumentResolver.Login;
 import com.toyproject.sh.domain.Category;
 import com.toyproject.sh.domain.Comment;
 import com.toyproject.sh.domain.Member;
@@ -8,7 +9,6 @@ import com.toyproject.sh.dto.*;
 import com.toyproject.sh.exception.ExceptionHandler;
 import com.toyproject.sh.service.CommentService;
 import com.toyproject.sh.service.PostService;
-import com.toyproject.sh.session.SessionConst;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,10 +43,10 @@ public class PostController {
     @PostMapping("/new")
     public String createPost(@ModelAttribute("postRequest") @Validated CreatePostForm postRequest,
                              BindingResult bindingResult,
-                             @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
+                             @Login Member loginMember) {
 
         if (loginMember == null) {
-            return "redirect:/";
+            return "home";
         }
 
         if (bindingResult.hasErrors()) {
@@ -86,7 +86,7 @@ public class PostController {
     @GetMapping("/{postId}") //댓글작성: 댓글작성에 대한 폼 전달-> html에서 댓글 등록 -> PostMapping으로 넘기기  댓글 삭제 :html에서 댓글 삭제 버튼 생성(로그인멤버와 댓글작성자가 같은지 확인필요) -> 댓글삭제버튼 생성
     public String singlePostAndCommentForm(@PathVariable Long postId,
                              Model model,
-                             @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
+                             @Login Member loginMember,
                              CreateCommentForm commentForm) {
         // SessionAttribute로 가져온 Member의 이메일과 게시글의 작성자가 같을 경우 수정버튼 활성화
         Post singlePost = postService.findSinglePost(postId);
@@ -112,7 +112,7 @@ public class PostController {
     public String createComment(@Validated @ModelAttribute("commentForm") CreateCommentForm commentForm,
                                 BindingResult bindingResult,
                                 @PathVariable Long postId,
-                                @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
+                                @Login Member loginMember) {
 
         if (bindingResult.hasErrors()) {
             log.error("댓글 생성중 오류 = {}", bindingResult);
@@ -132,7 +132,7 @@ public class PostController {
     @GetMapping("/{postId}/edit")
     public String editForm(@PathVariable Long postId,
                            Model model,
-                           @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
+                           @Login Member loginMember) {
         PostAndTagNameDto singlePostWithTag = postService.findSinglePostWithTag(postId);
 
         if (loginMember != null && loginMember.getEmail().equals(singlePostWithTag.getPost().getMember().getEmail())) {
@@ -149,7 +149,7 @@ public class PostController {
     public String edit(@Valid @ModelAttribute("postRequest") UpdatePostForm postRequest,
                        BindingResult bindingResult,
                        @PathVariable Long postId,
-                       @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
+                       @Login Member loginMember) {
 
         if (bindingResult.hasErrors()) {
             log.error("게시글 수정 중 오류 = {}", bindingResult.getFieldErrors());
@@ -172,7 +172,7 @@ public class PostController {
     }
     @GetMapping("/{postId}/delete")
     public String delete(@PathVariable Long postId,
-                         @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
+                         @Login Member loginMember) {
 
         Post post = postService.findOnePost(postId);
         if (loginMember != null && loginMember.getEmail().equals(post.getMember().getEmail())) {
