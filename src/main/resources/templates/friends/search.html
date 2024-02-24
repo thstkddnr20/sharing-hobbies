@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>친구 검색 폼</title>
+</head>
+<body>
+
+<h2>친구 검색</h2>
+
+<!-- 친구 검색 폼 -->
+<form th:action method="post" th:object="${friendForm}">
+    <label for="email">검색할 이메일:</label>
+    <input type="email" id="email" name="email" th:field="*{email}" required>
+
+    <button type="submit">친구 검색</button>
+
+    <div th:if="${#fields.hasErrors('foundEmail')}">
+        <p th:errors="*{foundEmail}"></p>
+    </div>
+
+    <div th:if="${not #strings.isEmpty(friendForm.foundEmail)}">
+        <label for="foundEmail">찾은 이메일:</label>
+        <span id="foundEmail" th:text="${friendForm.foundEmail}"></span>
+    </div>
+</form>
+
+<form th:if="${not #strings.isEmpty(friendForm.foundEmail)}" th:action="@{/friends/addFriend/{email}(email=${friendForm.foundEmail})}" method="get">
+    <input type="hidden" name="email" th:value="${friendForm.foundEmail}">
+    <button type="submit">친구 추가</button>
+</form>
+
+</body>
+</html>

@@ -9,9 +9,14 @@
     <li><span th:text="${email}"></span>님의 마이페이지
         <ul>
             <li>친구 기능</li>
-            <li><a href="/friends/list">친구목록</a></li>
+            <li><a href="/friends/">친구 페이지</a></li>
         </ul>
     </li>
 </ul>
+<h3>요청중인 친구 목록</h3>
+<ul>
+    <li th:each="requestEmail : ${requestFriendForm.email}" th:text="${requestEmail}"></li>
+</ul>
+
 </body>
 </html>

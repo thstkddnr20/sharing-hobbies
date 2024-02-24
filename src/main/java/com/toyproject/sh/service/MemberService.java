@@ -1,6 +1,7 @@
 package com.toyproject.sh.service;
 
 import com.toyproject.sh.domain.*;
+import com.toyproject.sh.dto.RequestFriendForm;
 import com.toyproject.sh.exception.ExceptionHandler;
 import com.toyproject.sh.repository.FriendRepository;
 import com.toyproject.sh.repository.MemberRepository;
@@ -46,14 +47,21 @@ public class MemberService {
     /**
      * 친구관련
      */
-    public Page<Member> findFriends(Member member, Pageable pageable) {
-        Page<Member> findAll = friendRepository.findAllMyFriends(member, FriendStatus.FRIEND, pageable);
-        if (!findAll.isEmpty()) {
-            return findAll;
+    public List<Member> findAllFriends(String email) { // 모든친구
+        return friendRepository.findAllFriendsByStatus(email, FriendStatus.FRIEND);
+    }
+
+    public RequestFriendForm findRequestFriends(String email) { // 내가 요청을 걸고있는 모든 친구
+        List<Member> members = friendRepository.findAllFriendsByStatus(email, FriendStatus.REQUEST);
+        RequestFriendForm requestFriendForm = new RequestFriendForm();
+        for (Member mem : members) {
+            requestFriendForm.getEmail().add(mem.getEmail());
         }
-        else {
-            throw new ExceptionHandler.FriendException("친구가 없습니다.");
-        }
+        return requestFriendForm;
+    }
+
+    public List<Member> findWaitingFriends(String email) { // 내가 요청을 받고 기다리고있는 모든 친구
+        return friendRepository.findAllFriendsByStatus(email, FriendStatus.WAITING);
     }
 
     public void requestFriend(Member member, Member friend) {

@@ -1,6 +1,8 @@
 package com.toyproject.sh.controller;
 
+import com.toyproject.sh.argumentResolver.Login;
 import com.toyproject.sh.domain.Member;
+import com.toyproject.sh.dto.RequestFriendForm;
 import com.toyproject.sh.service.MemberService;
 import com.toyproject.sh.service.PostService;
 import com.toyproject.sh.session.SessionConst;
@@ -21,14 +23,15 @@ public class MyPageController {
     private final MemberService memberService;
     private final PostService postService;
 
-    @GetMapping("/") //마이페이지 기본페이지
-    public String basicMyPage(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
+    @GetMapping("/") //마이페이지 기본페이지 // 친구 요청중인 폼, 친구 목록 폼, 친구 요청 대기 폼
+    public String basicMyPage(@Login Member loginMember,
                               Model model){
         if (loginMember == null) {
             return "redirect:/";
         }
         else {
             model.addAttribute("email", loginMember.getEmail());
+            model.addAttribute("requestFriendForm", memberService.findRequestFriends(loginMember.getEmail()));
             return "myPage/basic";
         }
     }
