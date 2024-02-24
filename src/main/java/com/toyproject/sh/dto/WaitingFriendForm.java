@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class RequestFriendForm {
+public class WaitingFriendForm {
 
-    private List<String> requestEmail = new ArrayList<>();
+    private List<String> waitingEmail = new ArrayList<>();
 }

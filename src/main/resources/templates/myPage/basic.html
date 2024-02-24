@@ -15,7 +15,25 @@
 </ul>
 <h3>요청중인 친구 목록</h3>
 <ul>
-    <li th:each="requestEmail : ${requestFriendForm.email}" th:text="${requestEmail}"></li>
+    <li th:each="requestEmail : ${requestFriendForm.requestEmail}" th:text="${requestEmail}"></li>
+</ul>
+
+<h3>친구추가 대기중인 친구 목록</h3>
+<ul>
+    <li th:each="waitingEmail : ${waitingFriendForm.waitingEmail}">
+        <span th:text="${waitingEmail}"></span>
+
+        <!-- 친구 요청 버튼 -->
+        <form th:action="@{/friends/acceptFriend/{email}(email=${waitingEmail})}" method="get">
+            <input type="hidden" name="requestedEmails" th:value="${waitingEmail}">
+            <button type="submit">친구 수락</button>
+        </form>
+    </li>
+</ul>
+
+<h3>친구 목록</h3>
+<ul>
+    <li th:each="requestEmail : ${requestFriendForm.requestEmail}" th:text="${requestEmail}"></li>
 </ul>
 
 </body>

@@ -57,6 +57,15 @@ public class FriendController {
 
         Member member = memberService.findMember(email);
         memberService.requestFriend(loginMember, member);
-        return "redirect:/";
+        return "redirect:/myPage/";
+    }
+
+    @GetMapping("/acceptFriend/{email}")
+    public String acceptFriend(@PathVariable String email,
+                               @Login Member loginMember) {
+
+        Member member = memberService.findMember(email);
+        memberService.acceptFriend(loginMember, member);
+        return "redirect:/myPage/";
     }
 }

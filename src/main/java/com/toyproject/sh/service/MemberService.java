@@ -2,6 +2,7 @@ package com.toyproject.sh.service;
 
 import com.toyproject.sh.domain.*;
 import com.toyproject.sh.dto.RequestFriendForm;
+import com.toyproject.sh.dto.WaitingFriendForm;
 import com.toyproject.sh.exception.ExceptionHandler;
 import com.toyproject.sh.repository.FriendRepository;
 import com.toyproject.sh.repository.MemberRepository;
@@ -55,13 +56,18 @@ public class MemberService {
         List<Member> members = friendRepository.findAllFriendsByStatus(email, FriendStatus.REQUEST);
         RequestFriendForm requestFriendForm = new RequestFriendForm();
         for (Member mem : members) {
-            requestFriendForm.getEmail().add(mem.getEmail());
+            requestFriendForm.getRequestEmail().add(mem.getEmail());
         }
         return requestFriendForm;
     }
 
-    public List<Member> findWaitingFriends(String email) { // 내가 요청을 받고 기다리고있는 모든 친구
-        return friendRepository.findAllFriendsByStatus(email, FriendStatus.WAITING);
+    public WaitingFriendForm findWaitingFriends(String email) { // 내가 요청을 받고 기다리고있는 모든 친구
+        List<Member> members = friendRepository.findAllFriendsByStatus(email, FriendStatus.WAITING);
+        WaitingFriendForm waitingFriendForm = new WaitingFriendForm();
+        for (Member mem : members) {
+            waitingFriendForm.getWaitingEmail().add(mem.getEmail());
+        }
+        return waitingFriendForm;
     }
 
     public void requestFriend(Member member, Member friend) {
