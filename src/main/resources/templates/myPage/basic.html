@@ -28,6 +28,11 @@
             <input type="hidden" name="requestedEmails" th:value="${waitingEmail}">
             <button type="submit">친구 수락</button>
         </form>
+
+        <form th:action="@{/friends/denyFriend/{email}(email=${waitingEmail})}" method="get">
+            <input type="hidden" name="requestedEmails" th:value="${waitingEmail}">
+            <button type="submit">친구 거절</button>
+        </form>
     </li>
 </ul>
 

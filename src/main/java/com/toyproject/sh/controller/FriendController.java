@@ -68,4 +68,12 @@ public class FriendController {
         memberService.acceptFriend(loginMember, member);
         return "redirect:/myPage/";
     }
+
+    @GetMapping("/denyFriend/{email}")
+    public String denyFriend(@PathVariable String email,
+                             @Login Member loginMember) {
+        Member member = memberService.findMember(email);
+        memberService.denyFriend(loginMember, member);
+        return "redirect:/myPage/";
+    }
 }
