@@ -33,6 +33,7 @@ public class MyPageController {
             model.addAttribute("email", loginMember.getEmail());
             model.addAttribute("requestFriendForm", memberService.findRequestFriends(loginMember.getEmail()));
             model.addAttribute("waitingFriendForm", memberService.findWaitingFriends(loginMember.getEmail()));
+            model.addAttribute("friendListForm", memberService.findAllFriends(loginMember.getEmail()));
             return "myPage/basic";
         }
     }

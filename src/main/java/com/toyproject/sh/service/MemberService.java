@@ -1,6 +1,7 @@
 package com.toyproject.sh.service;
 
 import com.toyproject.sh.domain.*;
+import com.toyproject.sh.dto.FriendListForm;
 import com.toyproject.sh.dto.RequestFriendForm;
 import com.toyproject.sh.dto.WaitingFriendForm;
 import com.toyproject.sh.exception.ExceptionHandler;
@@ -48,8 +49,13 @@ public class MemberService {
     /**
      * 친구관련
      */
-    public List<Member> findAllFriends(String email) { // 모든친구
-        return friendRepository.findAllFriendsByStatus(email, FriendStatus.FRIEND);
+    public FriendListForm findAllFriends(String email) { // 모든친구
+        List<Member> members = friendRepository.findAllFriendsByStatus(email, FriendStatus.FRIEND);
+        FriendListForm friendListForm = new FriendListForm();
+        for (Member mem : members) {
+            friendListForm.getFriendList().add(mem.getEmail());
+        }
+        return friendListForm;
     }
 
     public RequestFriendForm findRequestFriends(String email) { // 내가 요청을 걸고있는 모든 친구
