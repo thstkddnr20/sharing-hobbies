@@ -56,6 +56,11 @@ TODO 친구목록 만들어서 친구 관리하기
 친구목록, 친구추가, 친구요청거절, 친구요청수락 기능을 넣어 친구 기능을 만들었다.
 다음으로 할 것은 한번 점검할 시간을 가져야 할 것같다. 성능확인을 위하여 DB쿼리가 몇방 나가는지도 확인하여 적어놔야 할 것 같다.
 
+24.02.26 게시글 삭제에서 오류가 발생 아마 게시글 id 때문에 그런것같았는데
+@Modifying = @Query에서 insert, update, delete문을 사용할 때 어노테이션 붙여줘야함
+게시글 셀 때 보여주는 count에 맞는 게시글을 삭제해야했기 때문에 delete from Post p where p.count =:id 사용
+Post 엔티티에 TagManager OneToMany로 받아와서 cascadeType=REMOVE로 Post삭제시 같이 삭제
+
 
 
 
