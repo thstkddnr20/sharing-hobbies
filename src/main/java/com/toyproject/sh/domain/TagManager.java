@@ -11,7 +11,7 @@ import static jakarta.persistence.FetchType.LAZY;
 @Setter
 public class TagManager {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = LAZY)

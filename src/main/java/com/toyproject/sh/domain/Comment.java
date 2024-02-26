@@ -14,7 +14,7 @@ import static jakarta.persistence.FetchType.LAZY;
 @Setter
 public class Comment {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = LAZY)

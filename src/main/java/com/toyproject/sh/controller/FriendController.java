@@ -26,7 +26,7 @@ public class FriendController {
         return "friends/search";
     }
 
-    @PostMapping("/")
+    @PostMapping("/") // Query 1번
     public String friend(@Login Member loginMember,
                          @ModelAttribute("friendForm") @Validated SearchFriendForm friendForm,
                          BindingResult bindingResult) {
@@ -51,7 +51,7 @@ public class FriendController {
         return "friends/search";
     }
 
-    @GetMapping("/addFriend/{email}")
+    @GetMapping("/addFriend/{email}") // Query 7번
     public String addFriend(@PathVariable String email,
                             @Login Member loginMember) {
 
@@ -60,7 +60,7 @@ public class FriendController {
         return "redirect:/myPage/";
     }
 
-    @GetMapping("/acceptFriend/{email}")
+    @GetMapping("/acceptFriend/{email}") // Query 8번
     public String acceptFriend(@PathVariable String email,
                                @Login Member loginMember) {
 
@@ -69,7 +69,7 @@ public class FriendController {
         return "redirect:/myPage/";
     }
 
-    @GetMapping("/denyFriend/{email}")
+    @GetMapping("/denyFriend/{email}") // Query 8번
     public String denyFriend(@PathVariable String email,
                              @Login Member loginMember) {
         Member member = memberService.findMember(email);

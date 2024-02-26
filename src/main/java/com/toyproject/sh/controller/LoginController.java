@@ -30,7 +30,7 @@ public class LoginController {
         return "login/register";
     }
 
-    @PostMapping("/new")
+    @PostMapping("/new") //Query 2번
     public String register(@ModelAttribute @Valid MemberRequest request, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
@@ -60,7 +60,7 @@ public class LoginController {
         return "login/login";
     }
 
-    @PostMapping("/login")
+    @PostMapping("/login") // Query 1번
     public String login(@ModelAttribute @Valid MemberRequest memberRequest,
                         BindingResult bindingResult,
                         @RequestParam(defaultValue = "/") String redirectURL,

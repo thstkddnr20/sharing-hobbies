@@ -23,7 +23,7 @@ public class MyPageController {
     private final MemberService memberService;
     private final PostService postService;
 
-    @GetMapping("/") //마이페이지 기본페이지 // 친구 요청중인 폼, 친구 목록 폼, 친구 요청 대기 폼
+    @GetMapping("/") //마이페이지 기본페이지 // 친구 요청중인 폼, 친구 목록 폼, 친구 요청 대기 폼 //Query 3개
     public String basicMyPage(@Login Member loginMember,
                               Model model){
         if (loginMember == null) {

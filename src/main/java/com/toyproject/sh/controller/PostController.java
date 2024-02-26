@@ -40,7 +40,7 @@ public class PostController {
     }
 
 
-    @PostMapping("/new")
+    @PostMapping("/new") // Query 태그없을경우 2번 , 태그있을경우 5개..
     public String createPost(@ModelAttribute("postRequest") @Validated CreatePostForm postRequest,
                              BindingResult bindingResult,
                              @Login Member loginMember) {
@@ -64,7 +64,7 @@ public class PostController {
         return "redirect:/";
     }
 
-    @GetMapping("/paging") //query parameter로 size와 page정보를 넘겨주면 해당 페이지의 게시글들을 보여준다.
+    @GetMapping("/paging") //query parameter로 size와 page정보를 넘겨주면 해당 페이지의 게시글들을 보여준다. // Query 2개
     public String findAllPosts(@PageableDefault(page = 1) Pageable pageable, Model model) {
         Page<PostResponse> allPost = postService.findAllPost(pageable);
 
@@ -80,7 +80,7 @@ public class PostController {
     }
 
     @GetMapping("/{postId}") //댓글작성: 댓글작성에 대한 폼 전달-> html에서 댓글 등록 -> PostMapping으로 넘기기  댓글 삭제 :html에서 댓글 삭제 버튼 생성(로그인멤버와 댓글작성자가 같은지 확인필요) -> 댓글삭제버튼 생성
-    public String singlePostAndCommentForm(@PathVariable Long postId,
+    public String singlePostAndCommentForm(@PathVariable Long postId, // Query 2개
                              Model model,
                              @Login Member loginMember,
                              CreateCommentForm commentForm) {
@@ -105,7 +105,7 @@ public class PostController {
     }
 
     @PostMapping("/{postId}")
-    public String createComment(@Validated @ModelAttribute("commentForm") CreateCommentForm commentForm,
+    public String createComment(@Validated @ModelAttribute("commentForm") CreateCommentForm commentForm, // Query 댓글만들기 2개
                                 BindingResult bindingResult,
                                 @PathVariable Long postId,
                                 @Login Member loginMember) {
@@ -125,7 +125,7 @@ public class PostController {
         return "redirect:/";
     }
 
-    @GetMapping("/{postId}/edit")
+    @GetMapping("/{postId}/edit") // Query 불러오기 2개
     public String editForm(@PathVariable Long postId,
                            Model model,
                            @Login Member loginMember) {
@@ -141,7 +141,7 @@ public class PostController {
 
     }
 
-    @PostMapping("/{postId}/edit")
+    @PostMapping("/{postId}/edit") // Query 수정 7개.....
     public String edit(@Valid @ModelAttribute("postRequest") UpdatePostForm postRequest,
                        BindingResult bindingResult,
                        @PathVariable Long postId,
@@ -166,7 +166,7 @@ public class PostController {
             return "redirect:/";
         }
     }
-    @GetMapping("/{postId}/delete")
+    @GetMapping("/{postId}/delete") // TODO 오류발생
     public String delete(@PathVariable Long postId,
                          @Login Member loginMember) {
 
