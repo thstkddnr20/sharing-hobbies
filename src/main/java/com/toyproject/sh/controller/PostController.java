@@ -118,6 +118,8 @@ public class PostController {
         if (loginMember != null && loginMember.getEmail().equals(commentForm.getEmail())) {
             Post post = postService.findOnePost(postId);
             Comment comment = new Comment(loginMember, post, commentForm.getContent());
+            post.getComments().add(comment); // 포스트에도 댓글 넣어주기
+            log.info("getComment={}", post.getComments());
             commentService.saveComment(comment);
             return "redirect:/posts/{postId}";
         }
@@ -152,14 +154,14 @@ public class PostController {
             return "posts/edit";
         }
 
-        String postAuthor = postService.findPostAuthor(postId);
+        Post post = postService.findOnePost(postId);
 
-        if (loginMember != null && postAuthor.equals(loginMember.getEmail())) { // 보안 문제 어떻게 해결?
-            Post singlePost = postService.findSinglePost(postId);
-            singlePost.setCategory(postRequest.getCategory());
-            singlePost.setThumbnail(postRequest.getThumbnail());
-            singlePost.setContent(postRequest.getContent());
-            postService.updatePost(singlePost, postRequest.getTagName());
+        if (loginMember != null && post.getMember().getEmail().equals(loginMember.getEmail())) { // 보안 문제 어떻게 해결?
+
+            post.setCategory(postRequest.getCategory());
+            post.setThumbnail(postRequest.getThumbnail());
+            post.setContent(postRequest.getContent());
+            postService.updatePost(post, postRequest.getTagName());
             return "redirect:/posts/{postId}";
         }
         else {

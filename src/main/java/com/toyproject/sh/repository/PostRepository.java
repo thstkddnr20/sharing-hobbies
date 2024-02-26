@@ -7,6 +7,7 @@ import org.antlr.v4.runtime.misc.Pair;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -39,4 +40,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Query("select p from Post p where p.count =:id")
     Post findOnePost(@Param("id") Long id);
+
+    @Modifying
+    @Query("delete from Post p where p.count =:id")
+    void deletePostById(@Param("id") Long id);
 }
