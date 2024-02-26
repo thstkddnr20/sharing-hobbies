@@ -34,8 +34,11 @@ public class Post {
     @Enumerated(EnumType.STRING)
     private Category category;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     private List<Comment> comments;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
+    private List<TagManager> tagManagers;
 
     public Post(Member member, String thumbnail, String content, Category category) {
         this.member = member;
