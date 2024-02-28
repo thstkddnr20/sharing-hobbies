@@ -38,7 +38,14 @@
 
 <h3>친구 목록</h3>
 <ul>
-    <li th:each="friendList : ${friendListForm.friendList}" th:text="${friendList}"></li>
+    <li th:each="friendList : ${friendListForm.friendList}">
+        <span th:text="${friendList}"></span>
+
+        <form th:action="@{/friends/deleteFriend/{email}(email=${friendList})}" method="get">
+            <input type="hidden" name="deleteFriend" th:value="${friendList}">
+            <button type="submit">친구 삭제</button>
+        </form>
+    </li>
 </ul>
 
 </body>

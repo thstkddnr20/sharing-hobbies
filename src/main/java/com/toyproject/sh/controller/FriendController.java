@@ -76,4 +76,12 @@ public class FriendController {
         memberService.denyFriend(loginMember, member);
         return "redirect:/myPage/";
     }
+
+    @GetMapping("/deleteFriend/{email}")
+    public String deleteFriend(@PathVariable String email,
+                               @Login Member loginMember) {
+        Member member = memberService.findMember(email);
+        memberService.deleteFriend(loginMember, member);
+        return "redirect:/myPage/";
+    }
 }

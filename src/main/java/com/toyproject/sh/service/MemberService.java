@@ -128,6 +128,24 @@ public class MemberService {
         }
     }
 
+    public void deleteFriend(Member member, Member friend) {
+        Optional<Friend> firstOne = friendRepository.findOneByMemberAndFriend(member, friend);
+        if (firstOne.isPresent()){
+            Friend getFirst = firstOne.get();
+            if (getFirst.getFriendStatus() == FriendStatus.FRIEND) {
+                friendRepository.delete(getFirst);
+                Friend getSecond = friendRepository.findOneByMemberAndFriend(friend, member).get();
+                friendRepository.delete(getSecond);
+            }
+            else {
+                throw new ExceptionHandler.FriendException("친구가 아닙니다.");
+            }
+        }
+        else {
+            throw new ExceptionHandler.FriendException("잘못된 요청입니다.");
+        }
+    }
+
     /**
      * 태그관련
      */
