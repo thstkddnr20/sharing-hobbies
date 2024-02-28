@@ -61,6 +61,9 @@ TODO 친구목록 만들어서 친구 관리하기
 게시글 셀 때 보여주는 count에 맞는 게시글을 삭제해야했기 때문에 delete from Post p where p.count =:id 사용
 Post 엔티티에 TagManager OneToMany로 받아와서 cascadeType=REMOVE로 Post삭제시 같이 삭제
 
+24.02.28 친구삭제 구현, 게시글에 태그까지 보이도록 구현, 회원이 본인의 태그를 설정할 수 있도록 구현
+게시글에 태그까지 보이게 하여 원래 2방이던 쿼리를 3방을 날려 단일게시글을 가져왔다.
+원래 회원 태그 설정을 따로 Path를 지정해서 하지 않고 myPage에서 하려고했더니 기존의 모델에 넣어놓은 폼들을 다시 또 가져와야하는 비효율적인 문제를 맞닥뜨려서 따로 /myTag/generateTag로 끄집어냈다
 
 
 
