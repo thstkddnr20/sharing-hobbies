@@ -2,9 +2,11 @@ package com.toyproject.sh.controller;
 
 import com.toyproject.sh.argumentResolver.Login;
 import com.toyproject.sh.domain.Member;
+import com.toyproject.sh.dto.GenerateMemberTagForm;
 import com.toyproject.sh.dto.RequestFriendForm;
 import com.toyproject.sh.service.MemberService;
 import com.toyproject.sh.service.PostService;
+import com.toyproject.sh.service.TagService;
 import com.toyproject.sh.session.SessionConst;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +24,7 @@ public class MyPageController {
 
     private final MemberService memberService;
     private final PostService postService;
+    private final TagService tagService;
 
     @GetMapping("/") //마이페이지 기본페이지 // 친구 요청중인 폼, 친구 목록 폼, 친구 요청 대기 폼 //Query 3개
     public String basicMyPage(@Login Member loginMember,
@@ -29,13 +32,14 @@ public class MyPageController {
         if (loginMember == null) {
             return "redirect:/";
         }
-        else {
-            model.addAttribute("email", loginMember.getEmail());
-            model.addAttribute("requestFriendForm", memberService.findRequestFriends(loginMember.getEmail()));
-            model.addAttribute("waitingFriendForm", memberService.findWaitingFriends(loginMember.getEmail()));
-            model.addAttribute("friendListForm", memberService.findAllFriends(loginMember.getEmail()));
-            return "myPage/basic";
-        }
+
+        model.addAttribute("email", loginMember.getEmail());
+        model.addAttribute("requestFriendForm", memberService.findRequestFriends(loginMember.getEmail()));
+        model.addAttribute("waitingFriendForm", memberService.findWaitingFriends(loginMember.getEmail()));
+        model.addAttribute("friendListForm", memberService.findAllFriends(loginMember.getEmail()));
+        model.addAttribute("memberTag", tagService.findTagWithMember(loginMember.getEmail()));
+        return "myPage/basic";
+
     }
 
     

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form th:action="@{/myTag/generateTag}" method="post" th:object="${generateMemberTagForm}">
+    <label for="tagName">추가할 태그:</label>
+    <input type="tagName" id="tagName" name="tagName" th:field="*{tagName}" required>
+    <button type="submit">추가</button>
+    <div th:if="${#fields.hasErrors('tagName')}">
+        <p th:errors="*{tagName}"></p>
+    </div>
+</form>
+</body>
+</html>

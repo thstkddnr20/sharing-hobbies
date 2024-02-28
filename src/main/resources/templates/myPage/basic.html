@@ -13,6 +13,16 @@
         </ul>
     </li>
 </ul>
+<ul>
+    <li>태그 기능</li>
+    <li><a href="/myTag/generateTag">태그 추가 페이지</a></li>
+    <li><span th:text="${email}"></span>님의 보유 태그</li>
+    <li th:each="memberTags : ${memberTag.tags}">
+        <span th:text="${memberTags}"></span>
+    </li>
+</ul>
+<br>
+
 <h3>요청중인 친구 목록</h3>
 <ul>
     <li th:each="requestEmail : ${requestFriendForm.requestEmail}" th:text="${requestEmail}"></li>
