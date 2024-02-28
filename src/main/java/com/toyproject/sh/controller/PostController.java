@@ -9,6 +9,7 @@ import com.toyproject.sh.dto.*;
 import com.toyproject.sh.exception.ExceptionHandler;
 import com.toyproject.sh.service.CommentService;
 import com.toyproject.sh.service.PostService;
+import com.toyproject.sh.service.TagService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +33,7 @@ public class PostController {
 
     private final PostService postService;
     private final CommentService commentService;
+    private final TagService tagService;
 
     @GetMapping("/new")
     public String newPostForm(Model model) {
@@ -80,7 +82,7 @@ public class PostController {
     }
 
     @GetMapping("/{postId}") //댓글작성: 댓글작성에 대한 폼 전달-> html에서 댓글 등록 -> PostMapping으로 넘기기  댓글 삭제 :html에서 댓글 삭제 버튼 생성(로그인멤버와 댓글작성자가 같은지 확인필요) -> 댓글삭제버튼 생성
-    public String singlePostAndCommentForm(@PathVariable Long postId, // Query 2개
+    public String singlePostAndCommentForm(@PathVariable Long postId, // Query 2개 -> 3개
                              Model model,
                              @Login Member loginMember,
                              CreateCommentForm commentForm) {
@@ -95,7 +97,8 @@ public class PostController {
                 .map(comment -> new CommentResponse(comment))
                 .toList();
 
-        PostCommentsResponse postCommentsResponse = new PostCommentsResponse(singlePost, commentResponse);
+        String tagName = tagService.findTagWithPost(singlePost);
+        PostCommentsResponse postCommentsResponse = new PostCommentsResponse(singlePost, commentResponse, tagName); // 태그이름도 추가
 
         commentForm.setEmail(loginMember.getEmail());
         model.addAttribute("singlePost", postCommentsResponse);
@@ -168,7 +171,7 @@ public class PostController {
             return "redirect:/";
         }
     }
-    @GetMapping("/{postId}/delete") // TODO 오류발생
+    @GetMapping("/{postId}/delete")
     public String delete(@PathVariable Long postId,
                          @Login Member loginMember) {
 

@@ -17,7 +17,10 @@ public interface TagManagerRepository extends JpaRepository<TagManager, Long> {
     Optional<TagManager> findTMByNameAndMember(@Param("name") String name, @Param("member") Member member);
 
     @Query("select tm.tag.name from TagManager tm where tm.member =:member")
-    Optional<List<String>> findTagWithMember(@Param("member") Member member);
+    String findTagWithMember(@Param("member") Member member);
+
+    @Query("select tm.tag.name from TagManager tm where tm.post =:post")
+    String findTagWithPost(@Param("post") Post post);
 
     @Query("select tm from TagManager tm where tm.post =:post")
     Optional<TagManager> findTMByPost(@Param("post") Post post);

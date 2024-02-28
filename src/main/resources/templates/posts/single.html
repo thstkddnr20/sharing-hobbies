@@ -9,8 +9,9 @@
 <p th:text ="${singlePost.author}">글쓴이가 들어갈 부분입니다.</p>
 <p th:text ="${singlePost.content}">내용이 들어갈 부분입니다.</p>
 <p th:text ="${singlePost.category}">카테고리가 들어갈 부분입니다.</p>
+<p th:text ="${singlePost.tagName}">태그이름이 들어갈 부분입니다.</p>
 <p th:text ="${#temporals.format(singlePost.createdAt,'yyyy-MM-dd HH:mm')}">생성일자가 들어갈 부분입니다.</p>
-<p th:each="comment : ${singlePost.comments}"></p>
+
 
 <div th:if="${singlePost.author eq loginMember.email}">
     <a th:href="@{'/posts/' + ${singlePost.count} + '/edit'}">수정</a>

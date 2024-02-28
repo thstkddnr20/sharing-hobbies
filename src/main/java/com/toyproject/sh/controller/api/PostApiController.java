@@ -69,19 +69,19 @@ public class PostApiController {
                 .toList();
     }
 
-    @GetMapping("/{postId}")
-    public PostCommentsResponse searchSinglePost(@PathVariable Long postId) {
-        Post singlePost = postService.findSinglePost(postId);
-        if (singlePost == null) {
-            throw new ExceptionHandler.PostNotFoundException();
-        }
-
-        List<CommentResponse> commentResponse = singlePost.getComments().stream()
-                .map(comment -> new CommentResponse(comment))
-                .toList();
-
-        return new PostCommentsResponse(singlePost, commentResponse);
-    }
+//    @GetMapping("/{postId}")
+//    public PostCommentsResponse searchSinglePost(@PathVariable Long postId) {
+//        Post singlePost = postService.findSinglePost(postId);
+//        if (singlePost == null) {
+//            throw new ExceptionHandler.PostNotFoundException();
+//        }
+//
+//        List<CommentResponse> commentResponse = singlePost.getComments().stream()
+//                .map(comment -> new CommentResponse(comment))
+//                .toList();
+//
+//        return new PostCommentsResponse(singlePost, commentResponse);
+//    }
 
     @PostMapping("/{postId}")
     public String createComment(@PathVariable Long postId,

@@ -26,7 +26,9 @@ public class PostCommentsResponse {
 
     private List<CommentResponse> comments;
 
-    public PostCommentsResponse(Post post, List<CommentResponse> comments) {
+    private String tagName;
+
+    public PostCommentsResponse(Post post, List<CommentResponse> comments, String tagName) {
         this.count = post.getCount();
         this.author = post.getMember().getEmail();
         this.thumbnail = post.getThumbnail();
@@ -34,5 +36,6 @@ public class PostCommentsResponse {
         this.createdAt = post.getCreatedAt();
         this.category = post.getCategory();
         this.comments = comments;
+        this.tagName = tagName;
     }
 }
