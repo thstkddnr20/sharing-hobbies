@@ -107,11 +107,11 @@ public class PostController {
         return "posts/single";
     }
 
-    @PostMapping("/{postId}")
-    public String createComment(@Validated @ModelAttribute("commentForm") CreateCommentForm commentForm, // Query 댓글만들기 2개
-                                BindingResult bindingResult,
-                                @PathVariable Long postId,
-                                @Login Member loginMember) {
+    @PostMapping("/addComment/{postId}")
+    public String addComment(@Validated @ModelAttribute("commentForm") CreateCommentForm commentForm, // Query 댓글만들기 2개
+                             BindingResult bindingResult,
+                             @PathVariable Long postId,
+                             @Login Member loginMember) {
 
         if (bindingResult.hasErrors()) {
             log.error("댓글 생성중 오류 = {}", bindingResult);
@@ -124,6 +124,29 @@ public class PostController {
             post.getComments().add(comment); // 포스트에도 댓글 넣어주기
             log.info("getComment={}", post.getComments());
             commentService.saveComment(comment);
+            return "redirect:/posts/{postId}";
+        }
+
+        return "redirect:/";
+    }
+
+    @PostMapping("/addReply/{postId}/{parentId}")
+    public String addReply(@Validated @ModelAttribute("commentForm") CreateCommentForm commentForm,
+                           BindingResult bindingResult,
+                           @PathVariable Long postId,
+                           @PathVariable Long parentId,
+                           @Login Member loginMember) {
+
+        if (bindingResult.hasErrors()) {
+            log.error("답글 생성중 오류 = {}", bindingResult);
+            return "posts/single";
+        }
+
+        if (loginMember != null && loginMember.getEmail().equals(commentForm.getEmail())) {
+            Post post = postService.findOnePost(postId);
+            Comment parentComment = commentService.findParentComment(parentId);
+            Comment reply = new Comment(loginMember, post, commentForm.getContent(), parentComment);
+            commentService.saveComment(reply);
             return "redirect:/posts/{postId}";
         }
 
@@ -174,7 +197,6 @@ public class PostController {
 
     @GetMapping("/friends/{email}")
     public String friendPost(@PathVariable String email,
-                             @Login Member loginMember,
                              Model model,
                              @PageableDefault(page = 1) Pageable pageable) {
 

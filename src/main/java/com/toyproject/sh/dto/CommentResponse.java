@@ -9,6 +9,10 @@ import java.time.LocalDateTime;
 @Data
 public class CommentResponse {
 
+    private Long id;
+
+    private boolean isParent;
+
     private String author;
 
     private String content;
@@ -20,5 +24,7 @@ public class CommentResponse {
         this.author = comment.getMember().getEmail();
         this.content = comment.getContent();
         this.createdAt = comment.getCreatedAt();
+        this.id = comment.getId();
+        this.isParent = comment.isParent();
     }
 }

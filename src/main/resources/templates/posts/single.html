@@ -19,7 +19,7 @@
 </div>
 
 <h2>댓글 등록</h2>
-<form th:action="@{/posts/{postId}(postId=${singlePost.count})}" th:object="${commentForm}" method="post">
+<form th:action="@{/posts/addComment/{postId}(postId=${singlePost.count})}" th:object="${commentForm}" method="post">
     <div>
         <label for="email">작성자:</label>
         <input type="text" id="email" th:field="*{email}" readonly>
@@ -46,6 +46,21 @@
         <td th:text="${#temporals.format(comment.createdAt,'yyyy-MM-dd HH:mm')}"></td>
     </tr>
     </tbody>
+
+    <th:block th:each="comment : ${singlePost.comments}">
+        <th:block th:if="${comment.isParent()}">
+            <form th:action="@{'/posts/addReply/{postId}/{parentId}'(postId=${singlePost.count}, parentId=${comment.id})}" th:object="${commentForm}" method="post">
+                <div>
+                    <label for="replyEmail">작성자:</label>
+                    <input type="text" id="replyEmail" th:field="*{email}" readonly>
+
+                    <label for="replyContent">내용:</label>
+                    <input type="text" id="replyContent" th:field="*{content}">
+                </div>
+                <button type="submit">답글 작성</button>
+            </form>
+        </th:block>
+    </th:block>
 </table>
 </body>
 </html>

@@ -30,6 +30,8 @@ public class Comment {
 
     private LocalDateTime createdAt;
 
+    private boolean isParent = true;
+
     @OneToMany(mappedBy = "reply")
     private List<Comment> parentComment = new ArrayList<>();
 
@@ -52,6 +54,7 @@ public class Comment {
         this.post = post;
         this.content = content;
         this.createdAt = LocalDateTime.now();
+        this.isParent = false;
         this.reply = parentComment;
     }
 }

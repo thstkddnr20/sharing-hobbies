@@ -14,4 +14,8 @@ public class CommentService {
     public void saveComment(Comment comment) {
         commentRepository.save(comment);
     }
+
+    public Comment findParentComment(Long id) {
+        return commentRepository.findOneComment(id);
+    }
 }
