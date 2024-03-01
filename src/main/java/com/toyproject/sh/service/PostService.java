@@ -103,14 +103,13 @@ public class PostService {
         }
     }
 
-    public Page<Post> findOnesPost(Member member, Pageable pageable) { //TODO Pageable 인자 전달하는 것 컨트롤러 부분에서 테스트 필요
-        Page<Post> posts = postRepository.findAllByMember(member, pageable);
-        if (!posts.isEmpty()) {
-            return posts;
-        }
-        else {
-            throw new ExceptionHandler.PostNotFoundException();
-        }
+    public Page<PostResponse> findOnesPost(String email, Pageable pageable) { //TODO Pageable 인자 전달하는 것 컨트롤러 부분에서 테스트 필요
+        int page = pageable.getPageNumber() - 1; // page 위치에 있는 값은 0부터 시작한다.
+        int pageLimit = 3; // 한페이지에 보여줄 글 개수
+
+        Page<Post> posts = postRepository.findAllByMember(email, PageRequest.of(page, pageLimit, Sort.by(Sort.Direction.DESC, "id")));
+
+        return posts.map(post -> new PostResponse(post));
     }
 
     public Page<PostResponse> findAllPost(Pageable pageable) {

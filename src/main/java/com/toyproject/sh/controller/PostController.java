@@ -171,6 +171,27 @@ public class PostController {
             return "redirect:/";
         }
     }
+
+    @GetMapping("/friends/{email}")
+    public String friendPost(@PathVariable String email,
+                             @Login Member loginMember,
+                             Model model,
+                             @PageableDefault(page = 1) Pageable pageable) {
+
+        Page<PostResponse> allPost = postService.findOnesPost(email, pageable);
+
+        int blockLimit = 10; //page 개수 설정
+        int startPage = (((int) Math.ceil(((double) pageable.getPageNumber() / blockLimit))) - 1) * blockLimit + 1;
+        int endPage = Math.min((startPage + blockLimit - 1), allPost.getTotalPages());
+
+        model.addAttribute("postResponse", allPost);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+        model.addAttribute("email", email);
+
+        return "posts/friend";
+    }
+
     @GetMapping("/{postId}/delete")
     public String delete(@PathVariable Long postId,
                          @Login Member loginMember) {

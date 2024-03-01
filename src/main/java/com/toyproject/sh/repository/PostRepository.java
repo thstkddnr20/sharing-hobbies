@@ -15,8 +15,8 @@ import java.util.List;
 import java.util.Map;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
-    @Query("select p from Post p where p.member =:member")
-    Page<Post> findAllByMember(@Param("member") Member member, Pageable pageable);
+    @Query("select p from Post p where p.member.email =:email")
+    Page<Post> findAllByMember(@Param("email") String email, Pageable pageable);
 
     @Query("select p from Post p order by p.createdAt desc")
     Page<Post> findAllPost(Pageable pageable);
