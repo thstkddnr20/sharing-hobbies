@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static jakarta.persistence.FetchType.LAZY;
@@ -30,7 +31,7 @@ public class Comment {
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "reply")
-    private List<Comment> parentComment;
+    private List<Comment> parentComment = new ArrayList<>();
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "parentComment_id")
@@ -44,5 +45,13 @@ public class Comment {
     }
 
     public Comment() {
+    }
+
+    public Comment(Member member, Post post, String content, Comment parentComment) {
+        this.member = member;
+        this.post = post;
+        this.content = content;
+        this.createdAt = LocalDateTime.now();
+        this.reply = parentComment;
     }
 }

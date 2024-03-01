@@ -98,12 +98,12 @@ public class MemberServiceTest {
         memberService.addMemberTag("#수영", member1);
         memberService.addMemberTag("#클라이밍", member1);
         System.out.println("=============================");
-        List<String> tag1 = memberService.findTag(member1);
-        System.out.println("tag1 = " + tag1);
-        System.out.println("=============================");
-        memberService.deleteMemberTag("#스키", member1);
-        List<String> tag2 = memberService.findTag(member1);
-        System.out.println("tag2 = " + tag2);
+//        List<String> tag1 = memberService.findTag(member1);
+//        System.out.println("tag1 = " + tag1);
+//        System.out.println("=============================");
+//        memberService.deleteMemberTag("#스키", member1);
+//        List<String> tag2 = memberService.findTag(member1);
+//        System.out.println("tag2 = " + tag2);
 
 
     }
