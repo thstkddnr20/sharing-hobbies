@@ -6,6 +6,9 @@ spring :
     driver-class-name: org.h2.Driver
   messages:
     basename: errors
+  jwt:
+    secret: 11111111111111111111111111111111111111111111111111111111111111awwererere
+
 
   jpa:
     hibernate:
