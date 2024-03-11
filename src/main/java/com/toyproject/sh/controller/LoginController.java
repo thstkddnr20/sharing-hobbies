@@ -6,6 +6,7 @@ import com.toyproject.sh.exception.ExceptionHandler;
 import com.toyproject.sh.service.MemberService;
 import com.toyproject.sh.session.SessionConst;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -64,7 +65,8 @@ public class LoginController {
     public String login(@ModelAttribute @Valid MemberRequest memberRequest,
                         BindingResult bindingResult,
                         @RequestParam(defaultValue = "/") String redirectURL,
-                        HttpServletRequest request){ // redirectURL이 안넘어옴..
+                        HttpServletRequest request,
+                        HttpServletResponse response){ // redirectURL이 안넘어옴..
 
         if (bindingResult.hasErrors()){
             StringBuilder errorMessage = new StringBuilder("Validation failed for the following fields: ");
@@ -83,6 +85,8 @@ public class LoginController {
             log.error("로그인 정보 입력 오류");
             return "login/login";
         }
+
+
 
         log.info("redirect = {}", redirectURL);
         //getSession 세션이 있는경우 세션반환, 없을경우 새로운 세션 생성
