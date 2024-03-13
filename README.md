@@ -66,7 +66,11 @@ Post 엔티티에 TagManager OneToMany로 받아와서 cascadeType=REMOVE로 Pos
 원래 회원 태그 설정을 따로 Path를 지정해서 하지 않고 myPage에서 하려고했더니 기존의 모델에 넣어놓은 폼들을 다시 또 가져와야하는 비효율적인 문제를 맞닥뜨려서 따로 /myTag/generateTag로 끄집어냈다
 
 24.03.13 현재 필요한 개선점
-대댓글 구현 보류, 게시글 검색(태그를 이용가능) -> querydsl 사용
+대댓글 구현 보류, 게시글 검색(태그를 이용가능) -> querydsl 사용(완료)
+게시글 검색기능 추가완료하였다.
+최대한 querydsl를 사용하고싶었기 때문에 새로운 문제를 직면했다.
+문제 해결1 - querydsl의 fetchCount가 사용불가 해졌기 때문에 따로 count를 불러오는 쿼리를 작성하고 PageableExecutuionUtils를 사용하여 List를 Page로 형변환하였다.
+문제 해결2 - PageableExecutionUtils에 정렬할 값을 보내주는 것이 아닌 queryFactory에서 orderBy 사용하여 정렬할 값을 지정해야한다.
 
 
 
