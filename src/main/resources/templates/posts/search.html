@@ -6,13 +6,7 @@
 </head>
 
 <body>
-<h1>게시판 웹 서비스</h1>
-
-<!-- 검색 폼 추가 -->
-<form th:action="@{/posts/search}" th:object="${searchPost}" method="get">
-    <input type="text" name="search" placeholder="검색어를 입력하세요">
-    <button type="submit">검색</button>
-</form>
+<h1>검색 결과</h1>
 
 <div class="col-md-12">
     <!-- 목록 출력 영력 -->
@@ -31,22 +25,22 @@
         </tr>
     </table>
     <!-- 첫번째 페이지로 이동 -->
-    <a th:href="@{/posts/paging(page=1)}">첫 페이지 </a>
+    <a th:href="@{/posts/search(page=1,search=${searchName})}">첫 페이지 </a>
     <!-- 이전 링크 활성화 비활성화 -->
-    <a th:href="${postResponse.first} ? '#' : @{/posts/paging(page=${postResponse.number})}"> 이전 </a>
+    <a th:href="${postResponse.first} ? '#' : @{/posts/search(page=${postResponse.number},search=${searchName})}"> 이전 </a>
     <!-- 페이지 번호 링크(현재 페이지는 숫자만)
                for(int page=startPage; page<=endPage; page++)-->
     <span th:each="page: ${#numbers.sequence(startPage, endPage)}">
         <!-- 현재페이지는 링크 없이 숫자만 -->
         <span th:if="${page == postResponse.number + 1}" th:text="${page}"></span>
         <!-- 현재페이지 링크 X, 다른 페이지번호에는 링크를 보여준다 -->
-        <span th:unless="${page == postResponse.number + 1}"><a th:href="@{/posts/paging(page=${page})}" th:text="${page}"></a>
+        <span th:unless="${page == postResponse.number + 1}"><a th:href="@{/posts/search(page=${page},search=${searchName})}" th:text="${page}"></a>
         </span>
     </span>
     <!-- 다음 링크 활성화 비활성화 -->
-    <a th:href="${postResponse.last} ? '#' : @{/posts/paging(page=${postResponse.number + 2})}"> 다음 </a>
+    <a th:href="${postResponse.last} ? '#' : @{/posts/search(page=${postResponse.number + 2},search=${searchName})}"> 다음 </a>
     <!-- 마지막 페이지로 이동 -->
-    <a th:href="@{/posts/paging(page=${postResponse.totalPages})}"> 마지막 페이지</a>
+    <a th:href="@{/posts/search(page=${postResponse.totalPages},search=${searchName})}"> 마지막 페이지</a>
 </div>
 </body>
 </html>

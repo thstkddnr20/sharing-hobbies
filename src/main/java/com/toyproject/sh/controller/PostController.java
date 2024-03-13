@@ -9,12 +9,15 @@ import com.toyproject.sh.dto.*;
 import com.toyproject.sh.exception.ExceptionHandler;
 import com.toyproject.sh.service.CommentService;
 import com.toyproject.sh.service.PostService;
+import com.toyproject.sh.service.SearchService;
 import com.toyproject.sh.service.TagService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,6 +37,7 @@ public class PostController {
     private final PostService postService;
     private final CommentService commentService;
     private final TagService tagService;
+    private final SearchService searchService;
 
     @GetMapping("/new")
     public String newPostForm(Model model) {
@@ -77,8 +81,31 @@ public class PostController {
         model.addAttribute("postResponse", allPost);
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
+        model.addAttribute("searchPost", new SearchPostRequest());
 
         return "posts/paging";
+    }
+
+    @GetMapping("/search")
+    public String searchPosts(@PageableDefault(page = 1) Pageable pageable,
+                              Model model,
+                              @ModelAttribute("searchPost") SearchPostRequest request) {
+
+        int page = pageable.getPageNumber()-1; // page 위치에 있는 값은 0부터 시작한다.
+        int pageLimit = 3; // 한페이지에 보여줄 글 개수
+
+        Page<PostResponse> posts = searchService.searchPost(PageRequest.of(page, pageLimit), request.getSearch());
+
+        int blockLimit = 10; //page 개수 설정
+        int startPage = (((int) Math.ceil(((double) pageable.getPageNumber() / blockLimit))) - 1) * blockLimit + 1;
+        int endPage = Math.min((startPage + blockLimit - 1), posts.getTotalPages());
+
+        model.addAttribute("searchName", request.getSearch());
+        model.addAttribute("postResponse", posts);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+
+        return "posts/search";
     }
 
     @GetMapping("/{postId}") //댓글작성: 댓글작성에 대한 폼 전달-> html에서 댓글 등록 -> PostMapping으로 넘기기  댓글 삭제 :html에서 댓글 삭제 버튼 생성(로그인멤버와 댓글작성자가 같은지 확인필요) -> 댓글삭제버튼 생성
