@@ -1,13 +1,18 @@
-spring :
+#spring :
+#  datasource:
+#    url: jdbc:h2:tcp://localhost/~/sh
+#    username: sa
+#    password:
+#    driver-class-name: org.h2.Driver
+spring:
   datasource:
-    url: jdbc:h2:tcp://localhost/~/sh
-    username: sa
-    password:
-    driver-class-name: org.h2.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/shdb?serverTimezone=Asia/Seoul
+    username: cos
+    password: cos1234
+
   messages:
     basename: errors
-  jwt:
-    secret: 11111111111111111111111111111111111111111111111111111111111111awwererere
 
 
   jpa:
